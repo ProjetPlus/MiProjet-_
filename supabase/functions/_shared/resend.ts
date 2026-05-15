@@ -75,7 +75,8 @@ export function brandedEmailShell(opts: {
   ctaLabel?: string;
   recipientName?: string;     // Used to greet the user (e.g. "KOFFI Inocent")
   unsubscribeUrl?: string;    // Mandatory for marketing — falls back to generic page
-  showGreeting?: boolean;     // Default true
+  showGreeting?: boolean;     // Default true. Pass false for previews / templates that already include a greeting.
+  title?: string;             // Optional H1 rendered ABOVE the greeting (subject → title → salutation → body)
 }): string {
   const {
     innerHtml,
@@ -85,10 +86,18 @@ export function brandedEmailShell(opts: {
     recipientName,
     unsubscribeUrl = `${SITE_URL}/unsubscribe`,
     showGreeting = true,
+    title,
   } = opts;
 
+  // Title (H1) — rendered before salutation per editorial order.
+  const titleBlock = title && title.trim()
+    ? `<h1 class="mp-h1" style="margin:0 0 18px 0;font-size:26px;line-height:1.25;color:#0c2340;font-weight:800;letter-spacing:-0.3px;">${escapeHtml(title)}</h1>`
+    : "";
+
+  // Greeting — uses recipient first name if available, otherwise generic.
+  const greetingName = recipientName?.trim();
   const greeting = showGreeting
-    ? `<p style="margin:0 0 18px 0;font-size:16px;color:#0f172a;font-weight:600;">Bonjour ${escapeHtml(recipientName?.trim() || "")},</p>`
+    ? `<p style="margin:0 0 18px 0;font-size:16px;color:#0f172a;font-weight:600;">Bonjour${greetingName ? " " + escapeHtml(greetingName) : ""},</p>`
     : "";
 
   const cta = ctaUrl && ctaLabel

@@ -1,16 +1,1 @@
 project_id = "nrrgqnruoylwztddkntm"
-
-[functions.welcome-newsletter]
-verify_jwt = false
-
-[functions.welcome-subscription]
-verify_jwt = false
-
-[functions.notify-new-opportunity]
-verify_jwt = false
-
-[functions.resend-webhook]
-verify_jwt = false
-
-[functions.unsubscribe]
-verify_jwt = false

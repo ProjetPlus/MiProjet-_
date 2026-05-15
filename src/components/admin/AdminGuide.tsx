@@ -316,10 +316,10 @@ export const AdminGuide = () => {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Badge variant="outline" className="text-base py-2 px-4">
-              📧 support@miprojet.com
+              📧 innocentkoffi1@gmail.com
             </Badge>
             <Badge variant="outline" className="text-base py-2 px-4">
-              📞 +225 07 07 16 79 21
+              📞 +225 07 59 56 60 87
             </Badge>
           </div>
         </CardContent>

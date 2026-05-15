@@ -187,8 +187,18 @@ export const AdminEmailMarketing = () => {
                 <Input value={preheader} onChange={(e) => setPreheader(e.target.value)} />
               </div>
               <div>
-                <Label>HTML</Label>
-                <Textarea value={html} onChange={(e) => setHtml(e.target.value)} rows={10} className="font-mono text-xs" />
+                <Label>Titre principal (H1) — affiché en haut</Label>
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre de l'email" />
+                <p className="text-xs text-muted-foreground mt-1">Ordre : Sujet → Titre → "Bonjour {`{prénom}`}," (auto) → Corps</p>
+              </div>
+              <div>
+                <Label>Corps du message</Label>
+                <WYSIWYGEditor
+                  value={innerHtml}
+                  onChange={setInnerHtml}
+                  placeholder="Rédigez votre message — ne mettez pas 'Bonjour' ni de titre, ils sont ajoutés automatiquement."
+                  minHeight="260px"
+                />
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant="outline" onClick={() => setPreviewOpen(true)} disabled={!html}>

@@ -32,6 +32,8 @@ export const AdminEmailMarketing = () => {
   const [sending, setSending] = useState(false);
   const [subject, setSubject] = useState("");
   const [preheader, setPreheader] = useState("");
+  const [title, setTitle] = useState("");
+  const [innerHtml, setInnerHtml] = useState("");
   const [html, setHtml] = useState("");
   const [segment, setSegment] = useState("newsletter");
   const [ctaUrl, setCtaUrl] = useState("https://ivoireprojet.com");

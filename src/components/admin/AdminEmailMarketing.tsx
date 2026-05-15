@@ -128,10 +128,15 @@ export const AdminEmailMarketing = () => {
       <Tabs defaultValue="composer">
         <TabsList>
           <TabsTrigger value="composer"><Sparkles className="h-4 w-4 mr-1" />Composeur IA</TabsTrigger>
+          <TabsTrigger value="templates"><LayoutTemplate className="h-4 w-4 mr-1" />Templates</TabsTrigger>
           <TabsTrigger value="campaigns"><Mail className="h-4 w-4 mr-1" />Campagnes</TabsTrigger>
           <TabsTrigger value="subscribers"><Users className="h-4 w-4 mr-1" />Abonnés</TabsTrigger>
           <TabsTrigger value="logs"><History className="h-4 w-4 mr-1" />Logs</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="templates" className="pt-4">
+          <EmailTemplateManager />
+        </TabsContent>
 
         <TabsContent value="composer" className="space-y-4 pt-4">
           <Card>

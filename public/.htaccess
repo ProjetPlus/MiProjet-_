@@ -1,0 +1,24 @@
+RewriteEngine On
+
+# Route courte SEO/social: /n/art003/04/026
+# Les robots sociaux doivent recevoir la page OG dynamique, pas l'index SPA.
+RewriteCond %{REQUEST_URI} ^/(n|o|p|d)/ [NC]
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|LinkedInBot|Twitterbot|Slackbot|TelegramBot|Discordbot|SkypeUriPreview|Googlebot|bingbot) [NC]
+RewriteRule ^n/(.*)$ https://nrrgqnruoylwztddkntm.supabase.co/functions/v1/og-image?s=$1 [R=302,L,NE,QSA]
+
+RewriteCond %{REQUEST_URI} ^/(n|o|p|d)/ [NC]
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|LinkedInBot|Twitterbot|Slackbot|TelegramBot|Discordbot|SkypeUriPreview|Googlebot|bingbot) [NC]
+RewriteRule ^o/(.*)$ https://nrrgqnruoylwztddkntm.supabase.co/functions/v1/og-image?s=$1 [R=302,L,NE,QSA]
+
+RewriteCond %{REQUEST_URI} ^/(n|o|p|d)/ [NC]
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|LinkedInBot|Twitterbot|Slackbot|TelegramBot|Discordbot|SkypeUriPreview|Googlebot|bingbot) [NC]
+RewriteRule ^p/(.*)$ https://nrrgqnruoylwztddkntm.supabase.co/functions/v1/og-image?s=$1 [R=302,L,NE,QSA]
+
+RewriteCond %{REQUEST_URI} ^/(n|o|p|d)/ [NC]
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|LinkedInBot|Twitterbot|Slackbot|TelegramBot|Discordbot|SkypeUriPreview|Googlebot|bingbot) [NC]
+RewriteRule ^d/(.*)$ https://nrrgqnruoylwztddkntm.supabase.co/functions/v1/og-image?s=$1 [R=302,L,NE,QSA]
+
+# Tous les navigateurs normaux continuent vers la SPA.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]

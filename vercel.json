@@ -1,0 +1,26 @@
+{
+  "rewrites": [
+    { "source": "/share/:type/:id", "destination": "/api/og?type=:type&id=:id" },
+    { "source": "/n/:slug*", "destination": "/api/social?prefix=n&slug=:slug*" },
+    { "source": "/o/:slug*", "destination": "/api/social?prefix=o&slug=:slug*" },
+    { "source": "/p/:slug*", "destination": "/api/social?prefix=p&slug=:slug*" },
+    { "source": "/d/:slug*", "destination": "/api/social?prefix=d&slug=:slug*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=3600, stale-while-revalidate" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    }
+  ]
+}

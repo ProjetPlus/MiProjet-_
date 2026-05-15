@@ -1,0 +1,6 @@
+
+-- Update subscription plan names and features
+UPDATE subscription_plans SET name = 'Essentiel', features = '["Accès illimités aux subventions locales & internationales", "Opportunités de partenariats & financements", "Alertes personnalisées", "Support par email", "Accès au forum abonnés"]'::jsonb WHERE duration_type = 'monthly';
+UPDATE subscription_plans SET name = 'Avancé', features = '["Accès illimités aux subventions locales & internationales", "Opportunités de partenariats & financements", "Alertes personnalisées prioritaires", "Support prioritaire", "Accès au forum abonnés", "Webinaires mensuels"]'::jsonb WHERE duration_type = 'quarterly';
+UPDATE subscription_plans SET name = 'Premium', features = '["Accès illimités aux subventions locales & internationales", "Opportunités de partenariats & financements", "Alertes stratégiques en priorité", "Support VIP", "Accès au forum abonnés", "Webinaires mensuels", "Replays des formations"]'::jsonb WHERE duration_type = 'semiannual';
+UPDATE subscription_plans SET name = 'Elite', features = '["Accès illimités aux subventions locales & internationales", "Opportunités de partenariats & financements", "Alertes prioritaires en temps réel", "Support VIP dédié", "Accès au forum privé premium", "Webinaires illimités + replays", "Bonus : Session stratégique annuelle"]'::jsonb WHERE duration_type = 'annual';

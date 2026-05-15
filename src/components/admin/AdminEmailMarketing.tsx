@@ -75,6 +75,8 @@ export const AdminEmailMarketing = () => {
       if (!data?.ok) throw new Error(data?.error || "Génération échouée");
       setSubject(data.subject || "");
       setPreheader(data.preheader || "");
+      setTitle(data.title || "");
+      setInnerHtml(data.innerHtml || "");
       setHtml(data.html || "");
       toast({ title: "✨ Email généré", description: "Vérifiez puis envoyez la campagne." });
     } catch (e: any) {

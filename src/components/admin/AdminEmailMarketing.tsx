@@ -9,10 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Send, Loader2, Mail, Users, FileText, History, Eye } from "lucide-react";
+import { Sparkles, Send, Loader2, Mail, Users, FileText, History, Eye, LayoutTemplate } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog";
+import { WYSIWYGEditor } from "./WYSIWYGEditor";
+import { EmailTemplateManager } from "./EmailTemplateManager";
 
 const SEGMENTS = [
   { value: "newsletter", label: "📰 Abonnés Newsletter" },
@@ -30,6 +32,8 @@ export const AdminEmailMarketing = () => {
   const [sending, setSending] = useState(false);
   const [subject, setSubject] = useState("");
   const [preheader, setPreheader] = useState("");
+  const [title, setTitle] = useState("");
+  const [innerHtml, setInnerHtml] = useState("");
   const [html, setHtml] = useState("");
   const [segment, setSegment] = useState("newsletter");
   const [ctaUrl, setCtaUrl] = useState("https://ivoireprojet.com");
@@ -71,6 +75,8 @@ export const AdminEmailMarketing = () => {
       if (!data?.ok) throw new Error(data?.error || "Génération échouée");
       setSubject(data.subject || "");
       setPreheader(data.preheader || "");
+      setTitle(data.title || "");
+      setInnerHtml(data.innerHtml || "");
       setHtml(data.html || "");
       toast({ title: "✨ Email généré", description: "Vérifiez puis envoyez la campagne." });
     } catch (e: any) {
@@ -122,10 +128,15 @@ export const AdminEmailMarketing = () => {
       <Tabs defaultValue="composer">
         <TabsList>
           <TabsTrigger value="composer"><Sparkles className="h-4 w-4 mr-1" />Composeur IA</TabsTrigger>
+          <TabsTrigger value="templates"><LayoutTemplate className="h-4 w-4 mr-1" />Templates</TabsTrigger>
           <TabsTrigger value="campaigns"><Mail className="h-4 w-4 mr-1" />Campagnes</TabsTrigger>
           <TabsTrigger value="subscribers"><Users className="h-4 w-4 mr-1" />Abonnés</TabsTrigger>
           <TabsTrigger value="logs"><History className="h-4 w-4 mr-1" />Logs</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="templates" className="pt-4">
+          <EmailTemplateManager />
+        </TabsContent>
 
         <TabsContent value="composer" className="space-y-4 pt-4">
           <Card>
@@ -176,8 +187,18 @@ export const AdminEmailMarketing = () => {
                 <Input value={preheader} onChange={(e) => setPreheader(e.target.value)} />
               </div>
               <div>
-                <Label>HTML</Label>
-                <Textarea value={html} onChange={(e) => setHtml(e.target.value)} rows={10} className="font-mono text-xs" />
+                <Label>Titre principal (H1) — affiché en haut</Label>
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre de l'email" />
+                <p className="text-xs text-muted-foreground mt-1">Ordre : Sujet → Titre → "Bonjour {`{prénom}`}," (auto) → Corps</p>
+              </div>
+              <div>
+                <Label>Corps du message</Label>
+                <WYSIWYGEditor
+                  value={innerHtml}
+                  onChange={setInnerHtml}
+                  placeholder="Rédigez votre message — ne mettez pas 'Bonjour' ni de titre, ils sont ajoutés automatiquement."
+                  minHeight="260px"
+                />
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant="outline" onClick={() => setPreviewOpen(true)} disabled={!html}>

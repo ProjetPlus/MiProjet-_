@@ -155,7 +155,13 @@ export const AdminEmailMarketing = () => {
         </TabsList>
 
         <TabsContent value="templates" className="pt-4">
-          <EmailTemplateManager />
+          <EmailTemplateManager onUseTemplate={(template) => {
+            setSubject(template.subject);
+            setTitle(template.subject.replace(/^[✅🎉🚀🔐⏰\s]+/, "").slice(0, 60));
+            setInnerHtml(template.html);
+            setHtml(template.html);
+            setTemplateHtmlMode(true);
+          }} />
         </TabsContent>
 
         <TabsContent value="composer" className="space-y-4 pt-4">
@@ -205,6 +211,10 @@ export const AdminEmailMarketing = () => {
               <div>
                 <Label>Preheader (texte d'aperçu)</Label>
                 <Input value={preheader} onChange={(e) => setPreheader(e.target.value)} />
+              </div>
+              <div>
+                <Label>Libellé du bouton</Label>
+                <Input value={ctaLabel} onChange={(e) => setCtaLabel(e.target.value)} placeholder="Découvrir" />
               </div>
               <div>
                 <Label>Titre principal (H1) — affiché en haut</Label>

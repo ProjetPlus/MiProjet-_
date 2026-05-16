@@ -143,6 +143,7 @@ export function brandedEmailShell(opts: {
 
       <!-- BODY -->
       <tr><td class="mp-pad mp-body" style="padding:36px 36px 12px 36px;font-size:15px;line-height:1.7;color:#1e293b;">
+        ${titleBlock}
         ${greeting}
         ${innerHtml}
         ${cta}

@@ -18,7 +18,11 @@ const emailTemplateTypes = [
   { value: 'subscription_expiry', label: '⏰ Expiration abonnement', description: 'Rappel avant expiration' },
 ];
 
-export const EmailTemplateManager = () => {
+interface EmailTemplateManagerProps {
+  onUseTemplate?: (template: { subject: string; html: string }) => void;
+}
+
+export const EmailTemplateManager = ({ onUseTemplate }: EmailTemplateManagerProps) => {
   const { toast } = useToast();
   const [selectedType, setSelectedType] = useState('welcome');
   const [variables, setVariables] = useState<Record<string, string>>({
@@ -196,6 +200,12 @@ export const EmailTemplateManager = () => {
     }
   };
 
+  const useTemplateInCampaign = () => {
+    if (!generatedEmail || !onUseTemplate) return;
+    onUseTemplate(generatedEmail);
+    toast({ title: "Template chargé", description: "Le template est prêt dans le composeur Email Marketing." });
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -291,10 +301,18 @@ export const EmailTemplateManager = () => {
                 <Eye className="h-5 w-5" />
                 Aperçu : {generatedEmail.subject}
               </CardTitle>
-              <Button variant="outline" size="sm" onClick={copyHtml}>
-                <Copy className="h-4 w-4 mr-2" />
-                Copier HTML
-              </Button>
+              <div className="flex gap-2">
+                {onUseTemplate && (
+                  <Button size="sm" onClick={useTemplateInCampaign}>
+                    <Send className="h-4 w-4 mr-2" />
+                    Utiliser
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={copyHtml}>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copier HTML
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent>

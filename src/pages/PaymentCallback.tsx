@@ -48,7 +48,7 @@ const PaymentCallback = () => {
           // Search by payment reference or transaction ID in metadata
           const { data: payments } = await supabase
             .from('payments')
-            .select('*, projects(title)')
+            .select('*, projects!payments_project_id_projects_fkey(title)')
             .or(`payment_reference.eq.${searchValue},payment_reference.ilike.%${searchValue}%`)
             .limit(1);
 
@@ -87,7 +87,7 @@ const PaymentCallback = () => {
         if (user) {
           const { data: latestPayment } = await supabase
             .from('payments')
-            .select('*, projects(title)')
+            .select('*, projects!payments_project_id_projects_fkey(title)')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(1);

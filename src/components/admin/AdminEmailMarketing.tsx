@@ -35,6 +35,8 @@ export const AdminEmailMarketing = () => {
   const [title, setTitle] = useState("");
   const [innerHtml, setInnerHtml] = useState("");
   const [html, setHtml] = useState("");
+  const [ctaLabel, setCtaLabel] = useState("Découvrir");
+  const [templateHtmlMode, setTemplateHtmlMode] = useState(false);
   const [segment, setSegment] = useState("newsletter");
   const [ctaUrl, setCtaUrl] = useState("https://ivoireprojet.com");
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -61,6 +63,22 @@ export const AdminEmailMarketing = () => {
 
   useEffect(() => { loadData(); }, []);
 
+  const cleanEmailBody = (value: string) => String(value || "")
+    .replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/gi, "")
+    .replace(/^\s*<p[^>]*>\s*(?:Bonjour|Bonsoir|Cher\(e\)?|Cher|Chère|Chers|Hello|Salut|Coucou)[^<]*<\/p>/i, "")
+    .replace(/^\s*(?:Bonjour|Bonsoir|Hello|Salut)[^.\n]{0,80}[.,]?\s*/i, "")
+    .trim();
+
+  const buildCampaignHtml = (emailTitle: string, body: string) => {
+    const bodyHtml = cleanEmailBody(body) || "<p></p>";
+    const safeTitle = emailTitle.replace(/[&<>'"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[m] || m));
+    return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>MIPROJET</title></head><body style="margin:0;padding:0;background:#eef2f6;font-family:Segoe UI,Arial,sans-serif;color:#0f172a;"><span style="display:none!important;opacity:0;color:transparent;height:0;width:0;overflow:hidden;visibility:hidden;">${preheader}</span><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#eef2f6;padding:32px 12px;"><tr><td align="center"><table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(15,23,42,.08);"><tr><td align="center" style="background:linear-gradient(135deg,#0c2340 0%,#1e3a5f 60%,#15803d 100%);padding:34px 24px 26px;"><strong style="display:inline-block;color:#ffffff;font-size:28px;letter-spacing:1px;">MIPROJET</strong><p style="margin:10px 0 0;color:#a7d2ff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Entrepreneuriat jeune · Panafricain</p></td></tr><tr><td style="padding:36px 36px 12px;font-size:15px;line-height:1.7;color:#1e293b;"><h1 style="margin:0 0 18px;font-size:26px;line-height:1.25;color:#0c2340;font-weight:800;">${safeTitle}</h1><p style="margin:0 0 18px;font-size:16px;color:#0f172a;font-weight:600;">Bonjour,</p>${bodyHtml}${ctaUrl && ctaLabel ? `<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:32px auto;"><tr><td style="background:#15803d;border-radius:12px;"><a href="${ctaUrl}" style="display:inline-block;padding:16px 36px;color:#ffffff;font-weight:700;text-decoration:none;font-size:15px;">${ctaLabel}</a></td></tr></table>` : ""}</td></tr><tr><td style="padding:0 36px;"><hr style="border:0;border-top:1px solid #e2e8f0;margin:0;"/></td></tr><tr><td style="padding:24px 36px 32px;color:#64748b;font-size:12px;line-height:1.7;text-align:center;"><p style="margin:0 0 10px;"><a href="https://ivoireprojet.com" style="color:#15803d;text-decoration:none;font-weight:600;">ivoireprojet.com</a> · <a href="https://ivoireprojet.com/unsubscribe" style="color:#94a3b8;text-decoration:underline;">Se désabonner</a></p><p style="margin:0;">© ${new Date().getFullYear()} MIPROJET</p></td></tr></table></td></tr></table></body></html>`;
+  };
+
+  useEffect(() => {
+    if (!templateHtmlMode) setHtml(buildCampaignHtml(title || subject || "MIPROJET", innerHtml));
+  }, [subject, preheader, title, innerHtml, ctaUrl, ctaLabel, templateHtmlMode]);
+
   const handleGenerate = async () => {
     if (!prompt.trim()) {
       toast({ title: "Prompt requis", description: "Saisissez un mot, une phrase ou un brief.", variant: "destructive" });
@@ -77,6 +95,8 @@ export const AdminEmailMarketing = () => {
       setPreheader(data.preheader || "");
       setTitle(data.title || "");
       setInnerHtml(data.innerHtml || "");
+      setCtaLabel(data.ctaLabel || "Découvrir");
+      setTemplateHtmlMode(false);
       setHtml(data.html || "");
       toast({ title: "✨ Email généré", description: "Vérifiez puis envoyez la campagne." });
     } catch (e: any) {
@@ -102,7 +122,7 @@ export const AdminEmailMarketing = () => {
         title: "🚀 Campagne envoyée",
         description: `${data.sent} envoyés · ${data.failed} échoués sur ${data.total}`,
       });
-      setSubject(""); setHtml(""); setPreheader(""); setPrompt("");
+      setSubject(""); setTitle(""); setInnerHtml(""); setHtml(""); setPreheader(""); setPrompt(""); setTemplateHtmlMode(false);
       setConfirmOpen(false);
       loadData();
     } catch (e: any) {
@@ -135,7 +155,13 @@ export const AdminEmailMarketing = () => {
         </TabsList>
 
         <TabsContent value="templates" className="pt-4">
-          <EmailTemplateManager />
+          <EmailTemplateManager onUseTemplate={(template) => {
+            setSubject(template.subject);
+            setTitle(template.subject.replace(/^[✅🎉🚀🔐⏰\s]+/, "").slice(0, 60));
+            setInnerHtml(template.html);
+            setHtml(template.html);
+            setTemplateHtmlMode(true);
+          }} />
         </TabsContent>
 
         <TabsContent value="composer" className="space-y-4 pt-4">
@@ -185,6 +211,10 @@ export const AdminEmailMarketing = () => {
               <div>
                 <Label>Preheader (texte d'aperçu)</Label>
                 <Input value={preheader} onChange={(e) => setPreheader(e.target.value)} />
+              </div>
+              <div>
+                <Label>Libellé du bouton</Label>
+                <Input value={ctaLabel} onChange={(e) => setCtaLabel(e.target.value)} placeholder="Découvrir" />
               </div>
               <div>
                 <Label>Titre principal (H1) — affiché en haut</Label>

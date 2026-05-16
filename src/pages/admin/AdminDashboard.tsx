@@ -32,7 +32,6 @@ import { AdminReferralsManager } from "@/components/admin/AdminReferralsManager"
 import { AdminSettingsManager } from "@/components/admin/AdminSettingsManager";
 import { AdminOpportunitiesManager } from "@/components/admin/AdminOpportunitiesManager";
 import { AdminSubscriptionsManager } from "@/components/admin/AdminSubscriptionsManager";
-import { EmailTemplateManager } from "@/components/admin/EmailTemplateManager";
 import { AdminEmailMarketing } from "@/components/admin/AdminEmailMarketing";
 import { AdminLeadsManager } from "@/components/admin/AdminLeadsManager";
 import { AdminDocumentsManager } from "@/components/admin/AdminDocumentsManager";
@@ -254,10 +253,6 @@ const AdminDashboard = () => {
               <AdminDatabaseManager />
             </TabsContent>
             
-            <TabsContent value="email-templates" className="space-y-6">
-              <EmailTemplateManager />
-            </TabsContent>
-
             <TabsContent value="emails" className="space-y-6">
               <AdminEmailMarketing />
             </TabsContent>

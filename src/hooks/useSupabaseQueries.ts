@@ -91,7 +91,7 @@ export const usePayments = (page = 1, limit = 20, filters?: Record<string, any>)
     queryFn: async () => {
       let query = supabase
         .from('payments')
-        .select('*, projects(title)', { count: 'exact' });
+        .select('*, projects!payments_project_id_projects_fkey(title)', { count: 'exact' });
 
       if (filters?.status) {
         query = query.eq('status', filters.status);

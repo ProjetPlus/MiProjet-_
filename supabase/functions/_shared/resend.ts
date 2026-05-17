@@ -7,9 +7,12 @@ const RESEND_URL = "https://api.resend.com/emails";
 export const DEFAULT_FROM = Deno.env.get("RESEND_FROM") ?? "MIPROJET <noreply@ivoireprojet.com>";
 export const DEFAULT_REPLY_TO = Deno.env.get("RESEND_REPLY_TO") ?? "contact@ivoireprojet.com";
 
-// Public site URL (used for logo + unsubscribe links inside emails).
+// Public site URL (used for unsubscribe links inside emails).
 export const SITE_URL = Deno.env.get("SITE_URL") ?? "https://ivoireprojet.com";
-export const LOGO_URL = `${SITE_URL}/logo-miprojet.png`;
+// Logo URL — must be a stable, publicly reachable PNG. We use the Lovable
+// published URL so the image always renders even when the custom domain DNS
+// is still propagating.
+export const LOGO_URL = Deno.env.get("LOGO_URL") ?? "https://miprojet.lovable.app/logo-miprojet.png";
 
 export interface SendEmailInput {
   to: string | string[];

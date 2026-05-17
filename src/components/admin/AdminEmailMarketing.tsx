@@ -164,6 +164,17 @@ export const AdminEmailMarketing = () => {
         <Card><CardContent className="p-4 flex items-center gap-3"><History className="h-8 w-8 text-destructive" /><div><p className="text-2xl font-bold">{stats.failed}</p><p className="text-xs text-muted-foreground">Échecs (récents)</p></div></CardContent></Card>
       </div>
 
+      <div className="flex flex-wrap items-center gap-3 p-4 rounded-lg border bg-muted/40">
+        <MailPlus className="h-5 w-5 text-primary" />
+        <div className="flex-1 min-w-[200px]">
+          <p className="font-semibold text-sm">Mails de bienvenue manquants</p>
+          <p className="text-xs text-muted-foreground">{pendingWelcome} abonné(s) actif(s) n'ont jamais reçu le mail de bienvenue.</p>
+        </div>
+        <Button onClick={handleSendWelcomeBatch} disabled={welcomingBatch || pendingWelcome === 0}>
+          {welcomingBatch ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Envoi…</> : <><MailPlus className="h-4 w-4 mr-2" />Envoyer le welcome ({pendingWelcome})</>}
+        </Button>
+      </div>
+
       <Tabs defaultValue="composer">
         <TabsList>
           <TabsTrigger value="composer"><Sparkles className="h-4 w-4 mr-1" />Composeur IA</TabsTrigger>

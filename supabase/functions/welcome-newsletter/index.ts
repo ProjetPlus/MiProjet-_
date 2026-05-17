@@ -68,6 +68,12 @@ Deno.serve(async (req) => {
       unsubscribeUrl: unsubUrl,
     });
 
+    if (result.ok) {
+      await supabase.from("newsletter_subscribers")
+        .update({ welcomed_at: new Date().toISOString() })
+        .eq("email", e);
+    }
+
     return new Response(
       JSON.stringify({ ok: result.ok, id: result.id, provider: result.provider, error: result.error }),
       { status: result.ok ? 200 : 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },

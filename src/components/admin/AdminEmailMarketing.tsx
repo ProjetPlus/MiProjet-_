@@ -46,6 +46,24 @@ export const AdminEmailMarketing = () => {
   const [logs, setLogs] = useState<any[]>([]);
   const [subs, setSubs] = useState<any[]>([]);
   const [stats, setStats] = useState({ subs: 0, sent: 0, failed: 0 });
+  const [welcomingBatch, setWelcomingBatch] = useState(false);
+  const pendingWelcome = subs.filter((s) => s.is_active && !s.welcomed_at).length;
+
+  const handleSendWelcomeBatch = async () => {
+    if (!confirm(`Envoyer le mail de bienvenue à ${pendingWelcome} abonné(s) n'ayant jamais reçu de mail de bienvenue ?`)) return;
+    setWelcomingBatch(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-welcome-batch", { body: { limit: 500, onlyActive: true } });
+      if (error) throw error;
+      if (!data?.ok) throw new Error(data?.error || "Envoi échoué");
+      toast({ title: "✅ Welcome envoyés", description: `${data.sent} envoyés · ${data.failed} échoués sur ${data.total}` });
+      loadData();
+    } catch (e: any) {
+      toast({ title: "Erreur", description: e.message, variant: "destructive" });
+    } finally {
+      setWelcomingBatch(false);
+    }
+  };
 
   const loadData = async () => {
     const [c, l, s] = await Promise.all([

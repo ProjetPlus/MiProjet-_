@@ -1087,6 +1087,7 @@ export type Database = {
           source: string | null
           unsubscribe_token: string | null
           unsubscribed_at: string | null
+          welcomed_at: string | null
         }
         Insert: {
           created_at?: string
@@ -1098,6 +1099,7 @@ export type Database = {
           source?: string | null
           unsubscribe_token?: string | null
           unsubscribed_at?: string | null
+          welcomed_at?: string | null
         }
         Update: {
           created_at?: string
@@ -1109,6 +1111,7 @@ export type Database = {
           source?: string | null
           unsubscribe_token?: string | null
           unsubscribed_at?: string | null
+          welcomed_at?: string | null
         }
         Relationships: []
       }

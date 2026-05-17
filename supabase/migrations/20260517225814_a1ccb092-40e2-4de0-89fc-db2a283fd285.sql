@@ -1,0 +1,2 @@
+ALTER TABLE public.newsletter_subscribers ADD COLUMN IF NOT EXISTS welcomed_at TIMESTAMPTZ;
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_welcomed_at ON public.newsletter_subscribers(welcomed_at);

@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Receipt, Download, Eye, Send, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Search, Receipt, Download, Eye, Send, CheckCircle, Clock, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useToast } from "@/hooks/use-toast";
 
 interface Invoice {
   id: string;
@@ -30,6 +31,8 @@ export const AdminInvoicesTable = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchInvoices();
@@ -90,6 +93,37 @@ export const AdminInvoicesTable = () => {
       currency: currency || 'XOF',
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handleSendInvoice = async (invoice: Invoice) => {
+    setSendingId(invoice.id);
+    try {
+      const profile = invoice.profiles as any;
+      const { data: userData } = await supabase.from("profiles").select("email").eq("id", invoice.user_id).maybeSingle();
+      const email = userData?.email;
+      if (!email) {
+        toast({ title: "Email destinataire introuvable", variant: "destructive" });
+        setSendingId(null); return;
+      }
+      const { error } = await supabase.functions.invoke("send-invoice-email", {
+        body: {
+          invoiceId: invoice.id,
+          recipientEmail: email,
+          recipientName: `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || profile?.company_name || 'Client',
+          invoiceNumber: invoice.invoice_number,
+          amount: invoice.total,
+          dueDate: invoice.due_date || new Date().toISOString(),
+          paymentLink: `${window.location.origin}/dashboard?invoice=${invoice.id}`,
+        },
+      });
+      if (error) throw error;
+      await supabase.from("invoices").update({ status: "sent" }).eq("id", invoice.id);
+      toast({ title: "Facture envoyée", description: `Email envoyé à ${email}` });
+      fetchInvoices();
+    } catch (e: any) {
+      toast({ title: "Erreur d'envoi", description: e.message, variant: "destructive" });
+    }
+    setSendingId(null);
   };
 
   const filteredInvoices = invoices.filter(inv => {
@@ -241,12 +275,20 @@ export const AdminInvoicesTable = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="icon">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon">
-                          <Download className="h-4 w-4" />
-                        </Button>
+                        {(invoice.status === 'draft' || invoice.status === 'pending') && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSendInvoice(invoice)}
+                            disabled={sendingId === invoice.id}
+                          >
+                            {sendingId === invoice.id
+                              ? <Loader2 className="h-3 w-3 animate-spin" />
+                              : <><Send className="h-3 w-3 mr-1" /> Soumettre</>}
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon"><Download className="h-4 w-4" /></Button>
                       </div>
                     </TableCell>
                   </TableRow>

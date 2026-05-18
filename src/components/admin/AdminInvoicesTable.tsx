@@ -31,6 +31,8 @@ export const AdminInvoicesTable = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchInvoices();

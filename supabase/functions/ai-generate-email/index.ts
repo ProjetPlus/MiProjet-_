@@ -2,50 +2,56 @@ import { requireAdmin } from "../_shared/requireAdmin.ts";
 import { brandedEmailShell, corsHeaders } from "../_shared/resend.ts";
 
 /**
- * Génère un email IA pour la plateforme MIPROJET.
+ * Génère un email IA pour MIPROJET.
+ * Body: { prompt, ctaUrl, withImages?: boolean, imagePrompt?: string }
  *
- * STRUCTURE OBLIGATOIRE (ordre éditorial) :
- *   1. subject   — objet de l'email
- *   2. title     — H1 affiché EN HAUT (rendu par le shell)
- *   3. salutation — "Bonjour {nom}," AJOUTÉE AUTOMATIQUEMENT par le shell
- *   4. innerHtml — corps du message UNIQUEMENT
- *
- * ❌ INTERDIT : que innerHtml contienne "Bonjour", "Cher/Chère", "Hello", ou un H1
- *    (le shell s'en charge). Cela évite le double "Bonjour" historique.
+ * STRUCTURE (ordre éditorial) :
+ *   subject → title (H1) → salutation auto → [hero image si withImages] → innerHtml → CTA
  */
 
-const SYSTEM_PROMPT = `Tu es un expert en email marketing pour MIPROJET, plateforme panafricaine de structuration et de financement de projets en Côte d'Ivoire et en Afrique.
+const SYSTEM_PROMPT = `Tu es un expert en email marketing pour MIPROJET, plateforme panafricaine de structuration et de financement de projets.
 
-Génère un email PROFESSIONNEL en français.
-
-⚠️ RÈGLES STRICTES — LIRE ATTENTIVEMENT :
+⚠️ RÈGLES STRICTES :
 - Le système ajoute AUTOMATIQUEMENT le titre H1 ET la salutation "Bonjour {prénom},"
-- Donc : NE JAMAIS commencer le corps par "Bonjour", "Cher", "Hello", "Salut" ou toute autre formule de politesse d'ouverture
-- Donc : NE JAMAIS inclure de balise <h1> dans innerHtml — le titre est rendu séparément
+- NE JAMAIS commencer le corps par "Bonjour", "Cher", "Hello", "Salut"
+- NE JAMAIS inclure de balise <h1> dans innerHtml
 
-STRUCTURE de la réponse :
-- subject     : objet accrocheur (max 70 caractères, pas d'emoji excessif)
+STRUCTURE de la réponse JSON :
+- subject     : objet accrocheur (max 70 caractères)
 - preheader   : phrase d'accroche masquée (max 100 caractères)
-- title       : titre principal H1 (court, percutant, max 60 caractères) — rendu en haut de l'email
-- innerHtml   : UNIQUEMENT le CORPS de l'email en HTML inline (Gmail/Outlook). 2 à 4 paragraphes courts, ton chaleureux et expert. Liste à puces si pertinent (max 5). Aucun lien, aucune image, aucun H1, aucune salutation.
-- ctaLabel    : libellé court du bouton d'action (ex : "Découvrir", "Je m'abonne", "Voir l'opportunité")
+- title       : titre principal H1 (max 60 caractères)
+- innerHtml   : CORPS UNIQUEMENT en HTML inline. 2-4 paragraphes courts. Liste à puces si pertinent.
+- ctaLabel    : libellé du bouton CTA
+- imagePrompt : (si pertinent) description courte en anglais d'une image d'illustration professionnelle, sans texte sur l'image
 
-Réponds UNIQUEMENT en JSON strict :
-{"subject": "...", "preheader": "...", "title": "...", "innerHtml": "...", "ctaLabel": "..."}`;
+Réponds UNIQUEMENT en JSON strict.`;
 
-/** Nettoie le innerHtml renvoyé par l'IA : retire toute salutation ou H1 résiduels. */
 function sanitizeInnerHtml(html: string): string {
   let s = String(html || "");
-  // Supprime les balises h1 (le shell rend le titre)
   s = s.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/gi, "");
-  // Supprime un éventuel paragraphe d'ouverture commençant par Bonjour/Cher/Hello/Salut
-  s = s.replace(
-    /^\s*<p[^>]*>\s*(?:Bonjour|Bonsoir|Cher\(e\)?|Cher|Chère|Chers|Hello|Salut|Coucou)[^<]*<\/p>/i,
-    "",
-  );
-  // Supprime aussi un Bonjour brut sans balise
+  s = s.replace(/^\s*<p[^>]*>\s*(?:Bonjour|Bonsoir|Cher\(e\)?|Cher|Chère|Chers|Hello|Salut|Coucou)[^<]*<\/p>/i, "");
   s = s.replace(/^\s*(?:Bonjour|Bonsoir|Hello|Salut)[^.\n]{0,80}[.,]?\s*/i, "");
   return s.trim();
+}
+
+async function generateHeroImage(prompt: string, apiKey: string): Promise<string | null> {
+  try {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image",
+        messages: [{ role: "user", content: `Professional editorial illustration, no text: ${prompt}` }],
+        modalities: ["image", "text"],
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const imgUrl = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    return typeof imgUrl === "string" ? imgUrl : null;
+  } catch {
+    return null;
+  }
 }
 
 Deno.serve(async (req) => {
@@ -56,7 +62,7 @@ Deno.serve(async (req) => {
   if (!auth.ok) return auth.response;
 
   try {
-    const { prompt, ctaUrl } = await req.json();
+    const { prompt, ctaUrl, withImages, imagePrompt } = await req.json();
     if (!prompt || typeof prompt !== "string") {
       return new Response(JSON.stringify({ ok: false, error: "prompt required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -71,10 +77,7 @@ Deno.serve(async (req) => {
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
@@ -102,15 +105,24 @@ Deno.serve(async (req) => {
     const cleanInner = sanitizeInnerHtml(parsed.innerHtml ?? "<p>(contenu vide)</p>");
     const title = (parsed.title ?? "").toString().trim() || (parsed.subject ?? "MIPROJET");
 
-    // Aperçu : utilise un destinataire générique (la salutation sera personnalisée à l'envoi).
+    // Génère une image hero si demandé
+    let heroImageUrl: string | null = null;
+    if (withImages) {
+      const imgPrompt = (imagePrompt && String(imagePrompt).trim()) || parsed.imagePrompt || `${title} — modern African entrepreneurship`;
+      heroImageUrl = await generateHeroImage(imgPrompt, LOVABLE_API_KEY);
+    }
+
+    const heroBlock = heroImageUrl
+      ? `<img src="${heroImageUrl}" alt="" style="width:100%;max-width:560px;height:auto;border-radius:12px;display:block;margin:0 auto 24px;"/>`
+      : "";
+
     const finalHtml = brandedEmailShell({
       title,
-      innerHtml: cleanInner,
+      innerHtml: heroBlock + cleanInner,
       preheader: parsed.preheader ?? "",
       ctaUrl: ctaUrl ?? "https://ivoireprojet.com",
       ctaLabel: parsed.ctaLabel ?? "Découvrir",
       showGreeting: true,
-      // recipientName non fourni → "Bonjour," générique
     });
 
     return new Response(JSON.stringify({
@@ -119,8 +131,9 @@ Deno.serve(async (req) => {
       preheader: parsed.preheader ?? "",
       title,
       html: finalHtml,
-      innerHtml: cleanInner,
+      innerHtml: heroBlock + cleanInner,
       ctaLabel: parsed.ctaLabel ?? "",
+      heroImageUrl,
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ ok: false, error: (e as Error).message }), {

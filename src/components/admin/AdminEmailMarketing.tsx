@@ -47,7 +47,25 @@ export const AdminEmailMarketing = () => {
   const [subs, setSubs] = useState<any[]>([]);
   const [stats, setStats] = useState({ subs: 0, sent: 0, failed: 0 });
   const [welcomingBatch, setWelcomingBatch] = useState(false);
+  const [withImages, setWithImages] = useState(false);
+  const [imagePrompt, setImagePrompt] = useState("");
+  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
   const pendingWelcome = subs.filter((s) => s.is_active && !s.welcomed_at).length;
+
+  const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 20 * 1024 * 1024) {
+      toast({ title: "Image trop volumineuse", description: "Max 20 Mo", variant: "destructive" });
+      return;
+    }
+    const fileName = `email-hero/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+    const { error } = await supabase.storage.from('news-media').upload(fileName, file);
+    if (error) { toast({ title: "Erreur upload", description: error.message, variant: "destructive" }); return; }
+    const { data: pub } = supabase.storage.from('news-media').getPublicUrl(fileName);
+    setHeroImageUrl(pub.publicUrl);
+    toast({ title: "Image remplacée" });
+  };
 
   const handleSendWelcomeBatch = async () => {
     if (!confirm(`Envoyer le mail de bienvenue à ${pendingWelcome} abonné(s) n'ayant jamais reçu de mail de bienvenue ?`)) return;

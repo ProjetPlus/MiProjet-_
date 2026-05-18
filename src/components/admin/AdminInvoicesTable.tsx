@@ -95,6 +95,37 @@ export const AdminInvoicesTable = () => {
     }).format(amount);
   };
 
+  const handleSendInvoice = async (invoice: Invoice) => {
+    setSendingId(invoice.id);
+    try {
+      const profile = invoice.profiles as any;
+      const { data: userData } = await supabase.from("profiles").select("email").eq("id", invoice.user_id).maybeSingle();
+      const email = userData?.email;
+      if (!email) {
+        toast({ title: "Email destinataire introuvable", variant: "destructive" });
+        setSendingId(null); return;
+      }
+      const { error } = await supabase.functions.invoke("send-invoice-email", {
+        body: {
+          invoiceId: invoice.id,
+          recipientEmail: email,
+          recipientName: `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || profile?.company_name || 'Client',
+          invoiceNumber: invoice.invoice_number,
+          amount: invoice.total,
+          dueDate: invoice.due_date || new Date().toISOString(),
+          paymentLink: `${window.location.origin}/dashboard?invoice=${invoice.id}`,
+        },
+      });
+      if (error) throw error;
+      await supabase.from("invoices").update({ status: "sent" }).eq("id", invoice.id);
+      toast({ title: "Facture envoyée", description: `Email envoyé à ${email}` });
+      fetchInvoices();
+    } catch (e: any) {
+      toast({ title: "Erreur d'envoi", description: e.message, variant: "destructive" });
+    }
+    setSendingId(null);
+  };
+
   const filteredInvoices = invoices.filter(inv => {
     const searchLower = searchTerm.toLowerCase();
     const userName = `${inv.profiles?.first_name || ''} ${inv.profiles?.last_name || ''} ${inv.profiles?.company_name || ''}`.toLowerCase();

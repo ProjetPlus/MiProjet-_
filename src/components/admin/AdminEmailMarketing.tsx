@@ -241,6 +241,31 @@ export const AdminEmailMarketing = () => {
                   </Select>
                 </div>
               </div>
+              <div className="rounded-lg border p-3 space-y-2 bg-muted/30">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={withImages} onChange={(e) => setWithImages(e.target.checked)} className="h-4 w-4" />
+                  <span className="text-sm font-medium">🎨 Générer avec une image illustrative (IA)</span>
+                </label>
+                {withImages && (
+                  <Input
+                    placeholder="Description de l'image (optionnel, ex: 'jeunes entrepreneurs africains en réunion')"
+                    value={imagePrompt}
+                    onChange={(e) => setImagePrompt(e.target.value)}
+                  />
+                )}
+                {heroImageUrl && (
+                  <div className="flex items-center gap-3 pt-2 border-t">
+                    <img src={heroImageUrl} alt="hero" className="h-16 w-24 object-cover rounded" />
+                    <div className="flex gap-2">
+                      <label className="cursor-pointer">
+                        <input type="file" accept="image/*" className="hidden" onChange={handleHeroImageUpload} />
+                        <span className="inline-flex items-center px-3 py-1.5 text-xs border rounded hover:bg-muted">Remplacer</span>
+                      </label>
+                      <button type="button" onClick={() => setHeroImageUrl(null)} className="px-3 py-1.5 text-xs border rounded hover:bg-muted">Retirer</button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <Button onClick={handleGenerate} disabled={generating} className="w-full">
                 {generating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Génération...</> : <><Sparkles className="h-4 w-4 mr-2" />Générer la campagne</>}
               </Button>

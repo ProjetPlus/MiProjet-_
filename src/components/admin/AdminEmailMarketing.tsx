@@ -124,7 +124,7 @@ export const AdminEmailMarketing = () => {
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-generate-email", {
-        body: { prompt, ctaUrl },
+        body: { prompt, ctaUrl, withImages, imagePrompt },
       });
       if (error) throw error;
       if (!data?.ok) throw new Error(data?.error || "Génération échouée");
@@ -133,9 +133,10 @@ export const AdminEmailMarketing = () => {
       setTitle(data.title || "");
       setInnerHtml(data.innerHtml || "");
       setCtaLabel(data.ctaLabel || "Découvrir");
+      setHeroImageUrl(data.heroImageUrl || null);
       setTemplateHtmlMode(false);
       setHtml(data.html || "");
-      toast({ title: "✨ Email généré", description: "Vérifiez puis envoyez la campagne." });
+      toast({ title: "✨ Email généré", description: data.heroImageUrl ? "Avec image illustrative." : "Vérifiez puis envoyez." });
     } catch (e: any) {
       toast({ title: "Erreur IA", description: e.message, variant: "destructive" });
     } finally {

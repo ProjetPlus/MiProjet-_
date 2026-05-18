@@ -275,12 +275,20 @@ export const AdminInvoicesTable = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="icon">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon">
-                          <Download className="h-4 w-4" />
-                        </Button>
+                        {(invoice.status === 'draft' || invoice.status === 'pending') && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSendInvoice(invoice)}
+                            disabled={sendingId === invoice.id}
+                          >
+                            {sendingId === invoice.id
+                              ? <Loader2 className="h-3 w-3 animate-spin" />
+                              : <><Send className="h-3 w-3 mr-1" /> Soumettre</>}
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon"><Download className="h-4 w-4" /></Button>
                       </div>
                     </TableCell>
                   </TableRow>

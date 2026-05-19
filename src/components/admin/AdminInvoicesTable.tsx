@@ -105,7 +105,12 @@ export const AdminInvoicesTable = () => {
         toast({ title: "Email destinataire introuvable", variant: "destructive" });
         setSendingId(null); return;
       }
-      const { error } = await supabase.functions.invoke("send-invoice-email", {
+      // Workflow: draft -> pending (soumission) -> sent (envoi mail)
+      const isDraft = invoice.status === "draft";
+      if (isDraft) {
+        await supabase.from("invoices").update({ status: "pending" }).eq("id", invoice.id);
+      }
+      const { data, error } = await supabase.functions.invoke("send-invoice-email", {
         body: {
           invoiceId: invoice.id,
           recipientEmail: email,
@@ -117,6 +122,7 @@ export const AdminInvoicesTable = () => {
         },
       });
       if (error) throw error;
+      if (data && data.success === false) throw new Error(data.error || "Envoi échoué");
       await supabase.from("invoices").update({ status: "sent" }).eq("id", invoice.id);
       toast({ title: "Facture envoyée", description: `Email envoyé à ${email}` });
       fetchInvoices();

@@ -23,6 +23,7 @@ import { AdminNewsManager } from "@/components/admin/AdminNewsManager";
 import { AdminFAQManager } from "@/components/admin/AdminFAQManager";
 import { AdminPaymentsJournal } from "@/components/admin/AdminPaymentsJournal";
 import { AdminInvoicesTable } from "@/components/admin/AdminInvoicesTable";
+import { AdminInvoiceSendLog } from "@/components/admin/AdminInvoiceSendLog";
 import { AdminGuide } from "@/components/admin/AdminGuide";
 import { AdminAccessRequests } from "@/components/admin/AdminAccessRequests";
 import { AdminDatabaseManager } from "@/components/admin/AdminDatabaseManager";

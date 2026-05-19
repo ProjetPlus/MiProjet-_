@@ -189,15 +189,19 @@ const AdminDashboard = () => {
             
             <TabsContent value="invoices" className="space-y-6">
               <Tabs defaultValue="list">
-                <TabsList>
+                <TabsList className="flex flex-wrap h-auto">
                   <TabsTrigger value="list">Liste des factures</TabsTrigger>
                   <TabsTrigger value="generate">Générer une facture</TabsTrigger>
+                  <TabsTrigger value="tracking">Suivi des envois</TabsTrigger>
                 </TabsList>
                 <TabsContent value="list" className="pt-4">
                   <AdminInvoicesTable />
                 </TabsContent>
                 <TabsContent value="generate" className="pt-4">
                   <SmartInvoiceGenerator />
+                </TabsContent>
+                <TabsContent value="tracking" className="pt-4">
+                  <AdminInvoiceSendLog />
                 </TabsContent>
               </Tabs>
             </TabsContent>

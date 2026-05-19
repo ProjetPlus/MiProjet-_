@@ -140,7 +140,7 @@ export function brandedEmailShell(opts: {
 
       <!-- HEADER with logo -->
       <tr><td align="center" style="background:linear-gradient(135deg,#0c2340 0%,#1e3a5f 60%,#15803d 100%);padding:36px 24px 28px 24px;">
-        <img src="${LOGO_URL}" alt="MIPROJET" width="160" style="display:block;max-width:160px;height:auto;background:#ffffff;border-radius:14px;padding:10px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.15);"/>
+        <img src="${LOGO_URL}" alt="MIPROJET" width="180" style="display:block;max-width:180px;height:auto;border:0;outline:none;text-decoration:none;background:transparent;"/>
         <p style="margin:14px 0 0 0;color:#a7d2ff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Entrepreneuriat jeune · Panafricain</p>
       </td></tr>
 

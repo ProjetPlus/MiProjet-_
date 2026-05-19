@@ -47,7 +47,9 @@ serve(async (req: Request): Promise<Response> => {
     const html = brandedEmailShell({
       title: `Facture ${invoiceNumber}`,
       preheader: `Facture ${invoiceNumber} — ${amountFmt}`,
-      bodyHtml: body,
+      recipientName,
+      showGreeting: false,
+      innerHtml: body,
     });
 
     const result = await sendMail({

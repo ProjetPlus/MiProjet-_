@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Lock, Eye } from "lucide-react";
+import { MapPin, Lock, Eye, Award } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 
@@ -19,6 +19,7 @@ interface ProjectCardProps {
   currentFunding?: number;
   backers?: number;
   daysLeft?: number;
+  certified?: boolean | string; // true/"standard"/"premium"/"elite"
 }
 
 export const ProjectCard = ({

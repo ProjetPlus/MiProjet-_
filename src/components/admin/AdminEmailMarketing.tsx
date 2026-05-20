@@ -25,6 +25,39 @@ const SEGMENTS = [
   { value: "admins", label: "🛡️ Administrateurs" },
 ];
 
+const PreviewDialog = ({ open, onOpenChange, html, subject, preheader }: { open: boolean; onOpenChange: (v: boolean) => void; html: string; subject: string; preheader: string }) => {
+  const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+        <DialogHeader>
+          <DialogTitle>Aperçu final avant envoi</DialogTitle>
+          <DialogDescription>
+            <strong>Sujet :</strong> {subject || "—"} <br />
+            <strong>Preheader :</strong> <span className="text-muted-foreground">{preheader || "—"}</span>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex justify-center gap-2 pb-3 border-b">
+          <Button size="sm" variant={device === "desktop" ? "default" : "outline"} onClick={() => setDevice("desktop")}>
+            <Monitor className="h-4 w-4 mr-1" /> Desktop
+          </Button>
+          <Button size="sm" variant={device === "mobile" ? "default" : "outline"} onClick={() => setDevice("mobile")}>
+            <Smartphone className="h-4 w-4 mr-1" /> Mobile
+          </Button>
+        </div>
+        <div className="flex justify-center bg-muted/30 p-4 rounded-lg">
+          <iframe
+            srcDoc={html}
+            title="email preview"
+            className="bg-white border rounded shadow-lg transition-all"
+            style={{ width: device === "mobile" ? 375 : "100%", maxWidth: device === "mobile" ? 375 : 720, minHeight: 600 }}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export const AdminEmailMarketing = () => {
   const { toast } = useToast();
   const [prompt, setPrompt] = useState("");

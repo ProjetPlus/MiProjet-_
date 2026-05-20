@@ -32,8 +32,10 @@ export const ProjectCard = ({
   status = "validated",
   score,
   image,
+  certified,
 }: ProjectCardProps) => {
   const { t } = useLanguage();
+  const certLabel = typeof certified === "string" ? certified : (certified ? "standard" : null);
   
   const scoreColors = {
     A: "bg-success text-white",

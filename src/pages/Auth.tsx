@@ -203,6 +203,7 @@ const Auth = () => {
           await supabase.from('profiles').update({
             whatsapp: fullWhatsapp,
             referred_by_code: referralCode || null,
+            user_type: userType,
           }).eq('id', authData.user.id);
 
           // Track lead with source = signup

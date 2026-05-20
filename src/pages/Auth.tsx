@@ -187,6 +187,7 @@ const Auth = () => {
               last_name: lastName,
               whatsapp: fullWhatsapp,
               referred_by_code: referralCode || null,
+              user_type: userType,
             },
           },
         });

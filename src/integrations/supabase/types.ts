@@ -1460,7 +1460,7 @@ export type Database = {
           total_referrals: number | null
           unsubscribe_token: string | null
           updated_at: string
-          user_type: string | null
+          user_type: string
           whatsapp: string | null
         }
         Insert: {
@@ -1486,7 +1486,7 @@ export type Database = {
           total_referrals?: number | null
           unsubscribe_token?: string | null
           updated_at?: string
-          user_type?: string | null
+          user_type?: string
           whatsapp?: string | null
         }
         Update: {
@@ -1512,7 +1512,7 @@ export type Database = {
           total_referrals?: number | null
           unsubscribe_token?: string | null
           updated_at?: string
-          user_type?: string | null
+          user_type?: string
           whatsapp?: string | null
         }
         Relationships: []

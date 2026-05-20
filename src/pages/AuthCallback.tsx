@@ -12,6 +12,13 @@ const resolveRedirect = async (_email?: string | null) => {
       .from("user_roles").select("id")
       .eq("user_id", u.user.id).eq("role", "admin").maybeSingle();
     if (row) return "/admin";
+    // Check user_type — if missing or set by trigger default with no metadata, send to profile-select
+    const meta = (u.user.user_metadata || {}) as Record<string, unknown>;
+    const { data: prof } = await supabase.from("profiles").select("user_type").eq("id", u.user.id).maybeSingle();
+    if (!prof?.user_type || (!meta.user_type && prof.user_type === "individual" && !meta.first_name)) {
+      return "/profile-select";
+    }
+    if (prof.user_type === "investor") return "/investors";
   }
   return "/dashboard";
 };

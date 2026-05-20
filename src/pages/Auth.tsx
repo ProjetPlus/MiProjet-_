@@ -13,6 +13,8 @@ import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
 import { z } from "zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trackLead } from "@/lib/leadTracking";
+import { PROFILE_TYPES } from "@/pages/ProfileSelect";
+import { Card } from "@/components/ui/card";
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -76,6 +78,7 @@ const Auth = () => {
   const [countryCode, setCountryCode] = useState("+225");
   const [whatsapp, setWhatsapp] = useState("");
   const [referralCode, setReferralCode] = useState("");
+  const [userType, setUserType] = useState<string>("individual");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -163,13 +166,14 @@ const Auth = () => {
         
         if (authData.user) {
           const isSuperAdmin = await isSuperAdminSession(authData.user.email);
-          
           toast({ title: t('auth.loginSuccess'), description: t('auth.welcome') });
-          
           if (isSuperAdmin) {
             navigate(redirect || '/admin');
           } else {
-            navigate(redirect || '/dashboard');
+            // Route based on user_type
+            const { data: prof } = await supabase.from('profiles').select('user_type').eq('id', authData.user.id).maybeSingle();
+            const target = PROFILE_TYPES.find(p => p.id === prof?.user_type)?.target || '/dashboard';
+            navigate(redirect || target);
           }
         }
       } else {
@@ -183,6 +187,7 @@ const Auth = () => {
               last_name: lastName,
               whatsapp: fullWhatsapp,
               referred_by_code: referralCode || null,
+              user_type: userType,
             },
           },
         });
@@ -198,6 +203,7 @@ const Auth = () => {
           await supabase.from('profiles').update({
             whatsapp: fullWhatsapp,
             referred_by_code: referralCode || null,
+            user_type: userType,
           }).eq('id', authData.user.id);
 
           // Track lead with source = signup
@@ -252,6 +258,26 @@ const Auth = () => {
             <form onSubmit={onSubmit} className="space-y-5">
               {mode === "signup" && (
                 <>
+                  <div className="space-y-2">
+                    <Label>Je suis *</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {PROFILE_TYPES.map(p => {
+                        const Icon = p.icon;
+                        const active = userType === p.id;
+                        return (
+                          <button
+                            type="button"
+                            key={p.id}
+                            onClick={() => setUserType(p.id)}
+                            className={`p-3 rounded-lg border text-left transition-all ${active ? "border-primary bg-primary/5 ring-2 ring-primary/30" : "border-border hover:border-primary/50"}`}
+                          >
+                            <Icon className={`h-4 w-4 mb-1 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                            <div className="text-xs font-medium leading-tight">{p.label}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">{t('auth.firstName')}</Label>

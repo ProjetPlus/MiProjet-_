@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Lock, Eye } from "lucide-react";
+import { MapPin, Lock, Eye, Award } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 
@@ -19,6 +19,7 @@ interface ProjectCardProps {
   currentFunding?: number;
   backers?: number;
   daysLeft?: number;
+  certified?: boolean | string; // true/"standard"/"premium"/"elite"
 }
 
 export const ProjectCard = ({
@@ -31,8 +32,10 @@ export const ProjectCard = ({
   status = "validated",
   score,
   image,
+  certified,
 }: ProjectCardProps) => {
   const { t } = useLanguage();
+  const certLabel = typeof certified === "string" ? certified : (certified ? "standard" : null);
   
   const scoreColors = {
     A: "bg-success text-white",
@@ -79,6 +82,11 @@ export const ProjectCard = ({
             <Badge className={scoreColors[score] + " text-xs"}>
               Score {score}
             </Badge>
+            {certLabel && (
+              <Badge className="bg-emerald-500 text-white text-xs">
+                <Award className="h-3 w-3 mr-1" />Certifié {certLabel}
+              </Badge>
+            )}
           </div>
         </div>
       </Link>

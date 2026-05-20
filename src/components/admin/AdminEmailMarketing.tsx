@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Send, Loader2, Mail, Users, FileText, History, Eye, LayoutTemplate, MailPlus } from "lucide-react";
+import { Sparkles, Send, Loader2, Mail, Users, FileText, History, Eye, LayoutTemplate, MailPlus, Smartphone, Monitor } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog";
@@ -405,12 +405,8 @@ export const AdminEmailMarketing = () => {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-auto">
-          <DialogHeader><DialogTitle>Aperçu de la campagne</DialogTitle></DialogHeader>
-          <iframe srcDoc={html} className="w-full min-h-[600px] border rounded" title="email preview" />
-        </DialogContent>
-      </Dialog>
+      <PreviewDialog open={previewOpen} onOpenChange={setPreviewOpen} html={html} subject={subject} preheader={preheader} />
+
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>

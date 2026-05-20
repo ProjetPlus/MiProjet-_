@@ -30,6 +30,7 @@ import AdminInit from "./pages/admin/AdminInit";
 import ServiceRequest from "./pages/ServiceRequest";
 import ProjectDetail from "./pages/ProjectDetail";
 import AccessRequest from "./pages/AccessRequest";
+import ProfileSelect from "./pages/ProfileSelect";
 import { MaintenanceBanner } from "@/components/MaintenanceBanner";
 
 // Lazy load service and payment pages

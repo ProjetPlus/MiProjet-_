@@ -82,6 +82,11 @@ export const ProjectCard = ({
             <Badge className={scoreColors[score] + " text-xs"}>
               Score {score}
             </Badge>
+            {certLabel && (
+              <Badge className="bg-emerald-500 text-white text-xs">
+                <Award className="h-3 w-3 mr-1" />Certifié {certLabel}
+              </Badge>
+            )}
           </div>
         </div>
       </Link>

@@ -13,6 +13,8 @@ import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
 import { z } from "zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trackLead } from "@/lib/leadTracking";
+import { PROFILE_TYPES } from "@/pages/ProfileSelect";
+import { Card } from "@/components/ui/card";
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),

@@ -78,6 +78,7 @@ const Auth = () => {
   const [countryCode, setCountryCode] = useState("+225");
   const [whatsapp, setWhatsapp] = useState("");
   const [referralCode, setReferralCode] = useState("");
+  const [userType, setUserType] = useState<string>("individual");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});

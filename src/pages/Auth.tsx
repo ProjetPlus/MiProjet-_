@@ -166,13 +166,14 @@ const Auth = () => {
         
         if (authData.user) {
           const isSuperAdmin = await isSuperAdminSession(authData.user.email);
-          
           toast({ title: t('auth.loginSuccess'), description: t('auth.welcome') });
-          
           if (isSuperAdmin) {
             navigate(redirect || '/admin');
           } else {
-            navigate(redirect || '/dashboard');
+            // Route based on user_type
+            const { data: prof } = await supabase.from('profiles').select('user_type').eq('id', authData.user.id).maybeSingle();
+            const target = PROFILE_TYPES.find(p => p.id === prof?.user_type)?.target || '/dashboard';
+            navigate(redirect || target);
           }
         }
       } else {

@@ -258,6 +258,26 @@ const Auth = () => {
             <form onSubmit={onSubmit} className="space-y-5">
               {mode === "signup" && (
                 <>
+                  <div className="space-y-2">
+                    <Label>Je suis *</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {PROFILE_TYPES.map(p => {
+                        const Icon = p.icon;
+                        const active = userType === p.id;
+                        return (
+                          <button
+                            type="button"
+                            key={p.id}
+                            onClick={() => setUserType(p.id)}
+                            className={`p-3 rounded-lg border text-left transition-all ${active ? "border-primary bg-primary/5 ring-2 ring-primary/30" : "border-border hover:border-primary/50"}`}
+                          >
+                            <Icon className={`h-4 w-4 mb-1 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                            <div className="text-xs font-medium leading-tight">{p.label}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">{t('auth.firstName')}</Label>

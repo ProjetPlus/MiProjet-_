@@ -101,14 +101,13 @@ const OpportunityDetail = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('opportunities')
-      .select('*')
+      .select('id,title,description,content,opportunity_type,category,image_url,deadline,location,eligibility,amount_min,amount_max,currency,is_featured,is_premium,views_count,published_at,short_slug,status,is_active')
       .eq('id', id)
       .eq('status', 'published')
       .single();
 
     if (!error && data) {
-      setOpportunity(data as any);
-      // Increment view count
+      setOpportunity({ ...(data as any), contact_email: null, contact_phone: null, external_link: null });
       await supabase.from('opportunities').update({ views_count: ((data as any).views_count || 0) + 1 }).eq('id', id);
     }
     setLoading(false);

@@ -68,7 +68,7 @@ const Opportunities = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      let q = supabase.from('opportunities').select('*')
+      let q = supabase.from('opportunities').select('id,title,description,opportunity_type,category,image_url,deadline,location,amount_min,amount_max,currency,is_featured,is_premium,views_count,published_at,short_slug,status,is_active')
         .eq('status', 'published').eq('is_active', true)
         .order('is_featured', { ascending: false }).order('published_at', { ascending: false });
       if (selectedType !== 'all') q = q.eq('opportunity_type', selectedType);

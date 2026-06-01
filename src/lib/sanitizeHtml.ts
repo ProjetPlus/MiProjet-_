@@ -124,8 +124,9 @@ export function normalizeArticleHtml(value: string | null | undefined) {
   const raw = (value || "").trim();
   if (!raw) return "";
   const hasHtml = /<\/?[a-z][\s\S]*>/i.test(raw);
-  const hasMarkdownStructure = /^#{2,4}\s|^\|.+\|$|\*\*.+\*\*/m.test(raw);
-  const source = !hasHtml || hasMarkdownStructure ? markdownishToHtml(raw) : raw;
+  // If HTML is already present, never re-run markdown conversion (it would escape the tags
+  // and break the layout — root cause of the "désordre" after AI generation).
+  const source = hasHtml ? raw : markdownishToHtml(raw);
   return stripEmptyBlocks(wrapTables(sanitizeArticleHtml(source)));
 }
 

@@ -119,6 +119,20 @@ const OpportunityDetail = () => {
     ? (user && hasActiveSubscription)
     : hasAccess; // Free opps need lead capture for strategic info
 
+  // Fetch protected contacts via RPC once allowed
+  useEffect(() => {
+    (async () => {
+      if (!opportunity || !canSeeStrategicInfo || !user) return;
+      const { data } = await supabase.rpc('get_opportunity_contacts', { p_id: opportunity.id });
+      const row = Array.isArray(data) ? (data as any)[0] : null;
+      if (row) {
+        setOpportunity((prev) => prev ? { ...prev, contact_email: row.contact_email, contact_phone: row.contact_phone, external_link: row.external_link } : prev);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opportunity?.id, canSeeStrategicInfo, user?.id]);
+
+
   if (loading || authLoading || subLoading) {
     return (
       <div className="min-h-screen bg-background">

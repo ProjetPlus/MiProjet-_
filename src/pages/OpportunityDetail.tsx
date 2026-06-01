@@ -101,14 +101,13 @@ const OpportunityDetail = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('opportunities')
-      .select('*')
+      .select('id,title,description,content,opportunity_type,category,image_url,deadline,location,eligibility,amount_min,amount_max,currency,is_featured,is_premium,views_count,published_at,short_slug,status,is_active')
       .eq('id', id)
       .eq('status', 'published')
       .single();
 
     if (!error && data) {
-      setOpportunity(data as any);
-      // Increment view count
+      setOpportunity({ ...(data as any), contact_email: null, contact_phone: null, external_link: null });
       await supabase.from('opportunities').update({ views_count: ((data as any).views_count || 0) + 1 }).eq('id', id);
     }
     setLoading(false);
@@ -119,6 +118,20 @@ const OpportunityDetail = () => {
   const canSeeStrategicInfo = isPremium
     ? (user && hasActiveSubscription)
     : hasAccess; // Free opps need lead capture for strategic info
+
+  // Fetch protected contacts via RPC once allowed
+  useEffect(() => {
+    (async () => {
+      if (!opportunity || !canSeeStrategicInfo || !user) return;
+      const { data } = await supabase.rpc('get_opportunity_contacts', { p_id: opportunity.id });
+      const row = Array.isArray(data) ? (data as any)[0] : null;
+      if (row) {
+        setOpportunity((prev) => prev ? { ...prev, contact_email: row.contact_email, contact_phone: row.contact_phone, external_link: row.external_link } : prev);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opportunity?.id, canSeeStrategicInfo, user?.id]);
+
 
   if (loading || authLoading || subLoading) {
     return (

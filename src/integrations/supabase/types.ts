@@ -2035,6 +2035,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_opportunity_contacts: {
+        Args: { p_id: string }
+        Returns: {
+          contact_email: string
+          contact_phone: string
+          external_link: string
+        }[]
+      }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       increment_email_provider_usage: {

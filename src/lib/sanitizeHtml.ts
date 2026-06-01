@@ -1,17 +1,19 @@
 const ALLOWED_TAGS = new Set([
   "p", "br", "strong", "b", "em", "i", "u", "s", "a", "ul", "ol", "li",
-  "h2", "h3", "h4", "blockquote", "hr", "table", "thead", "tbody", "tr", "th", "td",
-  "caption", "figure", "figcaption", "img", "video", "source", "div", "span",
+  "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "hr",
+  "table", "thead", "tbody", "tfoot", "tr", "th", "td",
+  "caption", "figure", "figcaption", "img", "video", "source", "div", "span", "small", "code", "pre",
 ]);
 
 const ALLOWED_ATTRS: Record<string, string[]> = {
   a: ["href", "title", "target", "rel"],
-  img: ["src", "alt", "title", "loading"],
+  img: ["src", "alt", "title", "loading", "width", "height"],
   video: ["src", "controls", "poster", "muted", "playsinline"],
   source: ["src", "type"],
   th: ["colspan", "rowspan", "scope"],
   td: ["colspan", "rowspan"],
   div: ["class"],
+  span: ["class"],
 };
 
 const escapeHtml = (value: string) =>

@@ -1,17 +1,19 @@
 const ALLOWED_TAGS = new Set([
   "p", "br", "strong", "b", "em", "i", "u", "s", "a", "ul", "ol", "li",
-  "h2", "h3", "h4", "blockquote", "hr", "table", "thead", "tbody", "tr", "th", "td",
-  "caption", "figure", "figcaption", "img", "video", "source", "div", "span",
+  "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "hr",
+  "table", "thead", "tbody", "tfoot", "tr", "th", "td",
+  "caption", "figure", "figcaption", "img", "video", "source", "div", "span", "small", "code", "pre",
 ]);
 
 const ALLOWED_ATTRS: Record<string, string[]> = {
   a: ["href", "title", "target", "rel"],
-  img: ["src", "alt", "title", "loading"],
+  img: ["src", "alt", "title", "loading", "width", "height"],
   video: ["src", "controls", "poster", "muted", "playsinline"],
   source: ["src", "type"],
   th: ["colspan", "rowspan", "scope"],
   td: ["colspan", "rowspan"],
   div: ["class"],
+  span: ["class"],
 };
 
 const escapeHtml = (value: string) =>
@@ -124,8 +126,9 @@ export function normalizeArticleHtml(value: string | null | undefined) {
   const raw = (value || "").trim();
   if (!raw) return "";
   const hasHtml = /<\/?[a-z][\s\S]*>/i.test(raw);
-  const hasMarkdownStructure = /^#{2,4}\s|^\|.+\|$|\*\*.+\*\*/m.test(raw);
-  const source = !hasHtml || hasMarkdownStructure ? markdownishToHtml(raw) : raw;
+  // If HTML is already present, never re-run markdown conversion (it would escape the tags
+  // and break the layout — root cause of the "désordre" after AI generation).
+  const source = hasHtml ? raw : markdownishToHtml(raw);
   return stripEmptyBlocks(wrapTables(sanitizeArticleHtml(source)));
 }
 

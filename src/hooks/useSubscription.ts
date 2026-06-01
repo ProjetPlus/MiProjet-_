@@ -13,6 +13,7 @@ interface SubscriptionPlan {
   features: string[];
   is_active: boolean;
   sort_order: number;
+  target_profile?: string | null;
 }
 
 interface UserSubscription {

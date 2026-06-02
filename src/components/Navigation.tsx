@@ -88,7 +88,6 @@ export const Navigation = () => {
       label: "Actualités & Ressources",
       items: [
         { to: "/news", label: "Actualités", emoji: "📰" },
-        { to: "/blog", label: "Blog", emoji: "✍️" },
         { to: "/documents", label: "Documents", emoji: "📚" },
         { to: "/ebook", label: "Guide 50 financements", emoji: "📕" },
         { to: "/forum", label: "Forum communauté", emoji: "💬" },

@@ -73,7 +73,7 @@ const News = () => {
   ];
 
   useEffect(() => {
-    document.title = "Actualités & Blog | MIPROJET";
+    document.title = "Actualités | MIPROJET";
     fetchNews();
   }, []);
 
@@ -214,7 +214,7 @@ const News = () => {
                 <Newspaper className="h-8 w-8" />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Actualités & Blog</h1>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Actualités</h1>
                 <p className="text-primary-foreground/80 text-base md:text-lg mt-1">
                   Restez informé des dernières nouvelles de l'écosystème entrepreneurial africain
                 </p>

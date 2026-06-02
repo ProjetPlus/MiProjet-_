@@ -122,7 +122,7 @@ export const AdminGuide = () => {
         "Rédigez et publiez des actualités",
         "Utilisez l'éditeur IA pour structurer le contenu",
         "Téléchargez images (20 Mo) et vidéos (500 Mo)",
-        "Gérez les articles de blog",
+        "Gérez les actualités",
         "Planifiez et archivez les publications"
       ]
     },

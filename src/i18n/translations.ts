@@ -429,7 +429,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.opportunities': 'Opportunités',
     'nav.guide50': 'Guide : 50 Opportunités',
     'nav.documents': 'Documents & Guides',
-    'nav.news': 'Actualités & Blog',
+    'nav.news': 'Actualités',
     'nav.forum': 'Forum',
     'nav.testimonials': 'Témoignages',
 
@@ -437,7 +437,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'news.backToNews': 'Retour aux actualités',
     'news.share': 'Partager',
     'news.views': 'vues',
-    'news.heroTitle': 'Actualités & Blog',
+    'news.heroTitle': 'Actualités',
 
     // Contact
     'contact.title': 'Contactez-nous',
@@ -868,7 +868,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.opportunities': 'Opportunities',
     'nav.guide50': 'Guide: 50 Opportunities',
     'nav.documents': 'Documents & Guides',
-    'nav.news': 'News & Blog',
+    'nav.news': 'News',
     'nav.forum': 'Forum',
     'nav.testimonials': 'Testimonials',
 
@@ -889,7 +889,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'news.backToNews': 'Back to news',
     'news.share': 'Share',
     'news.views': 'views',
-    'news.heroTitle': 'News & Blog',
+    'news.heroTitle': 'News',
 
     // Contact
     'contact.title': 'Contact Us',
@@ -2022,7 +2022,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.opportunities': 'Oportunidades',
     'nav.guide50': 'Guía: 50 Oportunidades',
     'nav.documents': 'Documentos y Guías',
-    'nav.news': 'Noticias y Blog',
+    'nav.news': 'Noticias',
     'nav.forum': 'Foro',
     'nav.testimonials': 'Testimonios',
     'news.pageTitle': 'Noticias',
@@ -2041,7 +2041,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'news.backToNews': 'Volver a noticias',
     'news.share': 'Compartir',
     'news.views': 'vistas',
-    'news.heroTitle': 'Noticias y Blog',
+    'news.heroTitle': 'Noticias',
     'contact.title': 'Contáctenos',
     'contact.subtitle': 'Nuestro equipo está aquí para responder todas sus preguntas',
     'contact.address': 'Dirección',
@@ -2402,7 +2402,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.opportunities': 'Chancen',
     'nav.guide50': 'Leitfaden: 50 Chancen',
     'nav.documents': 'Dokumente & Leitfäden',
-    'nav.news': 'Nachrichten & Blog',
+    'nav.news': 'Nachrichten',
     'nav.forum': 'Forum',
     'nav.testimonials': 'Erfahrungsberichte',
     'news.pageTitle': 'Nachrichten',
@@ -2421,7 +2421,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'news.backToNews': 'Zurück zu Nachrichten',
     'news.share': 'Teilen',
     'news.views': 'Aufrufe',
-    'news.heroTitle': 'Nachrichten & Blog',
+    'news.heroTitle': 'Nachrichten',
     'contact.title': 'Kontaktieren Sie uns',
     'contact.subtitle': 'Unser Team steht Ihnen für alle Fragen zur Verfügung',
     'contact.address': 'Adresse',

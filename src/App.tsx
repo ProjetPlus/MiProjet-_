@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { VirtualAssistant } from "@/components/VirtualAssistant";
 import Index from "./pages/Index";
@@ -15,7 +15,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import About from "./pages/About";
 import Guide from "./pages/Guide";
 import Investors from "./pages/Investors";
-import Blog from "./pages/Blog";
+
 import SuccessStories from "./pages/SuccessStories";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -94,7 +94,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/guide" element={<Guide />} />
             <Route path="/investors" element={<Investors />} />
-            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog" element={<Navigate to="/news" replace />} />
             <Route path="/success-stories" element={<SuccessStories />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />

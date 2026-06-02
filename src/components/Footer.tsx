@@ -61,7 +61,7 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/guide" className="text-muted-foreground hover:text-primary transition-colors">Guide du porteur</Link></li>
               <li><Link to="/investors" className="text-muted-foreground hover:text-primary transition-colors">Guide investisseur</Link></li>
-              <li><Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">{t('nav.blog')}</Link></li>
+              <li><Link to="/news" className="text-muted-foreground hover:text-primary transition-colors">Actualités</Link></li>
               <li><Link to="/success-stories" className="text-muted-foreground hover:text-primary transition-colors">Success Stories</Link></li>
             </ul>
           </div>

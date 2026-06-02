@@ -1,41 +1,43 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Briefcase, GraduationCap, Handshake, ArrowRight, Lock } from "lucide-react";
+import { Crown, Users, Building2, TrendingUp, Banknote, ArrowRight, Sparkles } from "lucide-react";
 
 export const MembershipBanner = () => {
-  const benefits = [
-    { icon: Briefcase, label: "Financements", desc: "Appels à projets & subventions" },
-    { icon: GraduationCap, label: "Formations", desc: "Webinaires & ateliers exclusifs" },
-    { icon: Handshake, label: "Accompagnement", desc: "Coaching & partenariats VIP" },
+  const profiles = [
+    { icon: Users, label: "Porteurs de projet", desc: "Structurer, financer, lancer votre idée à un coût accessible." },
+    { icon: Building2, label: "Entreprises & Start-ups", desc: "Passer à l'échelle avec des partenaires et financements ciblés." },
+    { icon: TrendingUp, label: "Investisseurs", desc: "Accéder en priorité aux projets certifiés MiProjet+." },
+    { icon: Banknote, label: "Bailleurs & Institutions", desc: "Soutenir des projets sérieux, audités, à fort impact." },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Badge className="bg-accent text-accent-foreground px-3 py-1">
           <Crown className="h-3 w-3 mr-1" />
-          CLUB MIPROJET
+          ESPACE MEMBRES MIPROJET
         </Badge>
         <Badge variant="outline" className="border-primary text-primary">
-          <Lock className="h-3 w-3 mr-1" />
-          Réservé aux abonnés
+          <Sparkles className="h-3 w-3 mr-1" />
+          Un univers par profil
         </Badge>
       </div>
-      
+
       <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
-        Accédez aux{" "}
-        <span className="gradient-text">Opportunités Exclusives</span>
+        Un seul écosystème.{" "}
+        <span className="gradient-text">Des opportunités sur mesure pour chaque profil.</span>
       </h2>
-      
+
       <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-        Rejoignez notre communauté de porteurs de projets et bénéficiez 
-        d'un accès privilégié aux meilleures opportunités de financement, 
-        de formation et d'accompagnement en Afrique.
+        Porteurs de projet, entreprises, partenaires techniques, investisseurs, bailleurs,
+        institutions et experts : connectez-vous pour découvrir les <strong>plans, tarifs
+        et opportunités</strong> spécifiquement conçus pour votre profil — accessibles,
+        sérieux, et à fort potentiel.
       </p>
 
       <div className="space-y-3">
-        {benefits.map((item, i) => {
+        {profiles.map((item, i) => {
           const Icon = item.icon;
           return (
             <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border hover:border-primary/30 transition-colors">
@@ -52,16 +54,16 @@ export const MembershipBanner = () => {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Link to="/subscription">
+        <Link to="/auth?redirect=/subscription">
           <Button size="lg" className="w-full sm:w-auto gap-2">
             <Crown className="h-4 w-4" />
-            S'abonner
+            Me connecter pour voir mes plans
             <ArrowRight className="h-4 w-4" />
           </Button>
         </Link>
-        <Link to="/opportunities">
+        <Link to="/auth?mode=signup">
           <Button size="lg" variant="outline" className="w-full sm:w-auto">
-            Voir les opportunités
+            Créer un compte gratuit
           </Button>
         </Link>
       </div>

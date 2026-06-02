@@ -15,7 +15,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import About from "./pages/About";
 import Guide from "./pages/Guide";
 import Investors from "./pages/Investors";
-import Blog from "./pages/Blog";
+
 import SuccessStories from "./pages/SuccessStories";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";

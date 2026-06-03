@@ -53,6 +53,8 @@ const MiProjetPlusApp = lazy(() => import("./pages/miprojet-plus/MiProjetPlusApp
 const Journey = lazy(() => import("./pages/Journey"));
 const ShortLink = lazy(() => import("./pages/ShortLink"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const Tenders = lazy(() => import("./pages/Tenders"));
+const TenderDetail = lazy(() => import("./pages/TenderDetail"));
 
 const queryClient = new QueryClient();
 
@@ -195,6 +197,11 @@ const App = () => (
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<News />} />
             <Route path="/actualites" element={<News />} />
+            {/* Appels d'offres */}
+            <Route path="/appels-doffres" element={<Suspense fallback={<PageLoader />}><Tenders /></Suspense>} />
+            <Route path="/appels-doffres/:slug" element={<Suspense fallback={<PageLoader />}><TenderDetail /></Suspense>} />
+            <Route path="/tenders" element={<Navigate to="/appels-doffres" replace />} />
+
             <Route path="/unsubscribe" element={
               <Suspense fallback={<PageLoader />}>
                 <Unsubscribe />

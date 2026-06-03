@@ -41,6 +41,7 @@ import { AdminMPOverview } from "@/components/admin/AdminMPOverview";
 import { AdminMPCertificationsManager } from "@/components/admin/AdminMPCertificationsManager";
 import { AdminMPAnalytics } from "@/components/admin/AdminMPAnalytics";
 import { AdminMaintenanceManager } from "@/components/admin/AdminMaintenanceManager";
+import { AdminTendersManager } from "@/components/admin/AdminTendersManager";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading, adminChecked, signOut } = useAuth();
@@ -236,6 +237,10 @@ const AdminDashboard = () => {
                   <AdminFirecrawlScraper />
                 </TabsContent>
               </Tabs>
+            </TabsContent>
+
+            <TabsContent value="tenders" className="space-y-6">
+              <AdminTendersManager />
             </TabsContent>
 
             <TabsContent value="leads" className="space-y-6">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown, Search, Phone, Sparkles } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown, Search, Phone, Sparkles, Briefcase } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
@@ -173,6 +173,18 @@ export const Navigation = () => {
 
               <LanguageSelector />
 
+              {/* Appels d'offres — pill accent */}
+              <Link to="/appels-doffres" className="ml-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full px-4 h-10 font-bold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all"
+                >
+                  <Briefcase className="h-4 w-4 mr-1.5" />
+                  Appels d'offres
+                </Button>
+              </Link>
+
               {/* MiProjet+ — detached pill (Belife "Belife & Moi" style) */}
               <Link to="/miprojet-plus" className="ml-1">
                 <Button
@@ -251,15 +263,25 @@ export const Navigation = () => {
             </div>
 
             {/* Mobile button */}
-            <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex items-center gap-1.5 lg:hidden">
+              <Link to="/appels-doffres">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full h-9 px-3 font-bold text-xs border-2 border-accent text-accent"
+                >
+                  <Briefcase className="h-3.5 w-3.5 mr-1" />
+                  Offres
+                </Button>
+              </Link>
               <Link to="/miprojet-plus">
                 <Button
                   size="sm"
-                  className="rounded-full h-9 px-3.5 font-bold text-white text-xs"
+                  className="rounded-full h-9 px-3 font-bold text-white text-xs"
                   style={{ background: "var(--gradient-brand)" }}
                 >
                   <Sparkles className="h-3.5 w-3.5 mr-1" />
-                  MiProjet+
+                  MP+
                 </Button>
               </Link>
               <button

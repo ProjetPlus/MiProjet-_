@@ -58,6 +58,60 @@ export type Database = {
           },
         ]
       }
+      connection_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          meeting_at: string | null
+          meeting_link: string | null
+          message: string | null
+          opportunity_id: string | null
+          project_id: string | null
+          request_type: string
+          requester_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          target_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          meeting_at?: string | null
+          meeting_link?: string | null
+          message?: string | null
+          opportunity_id?: string | null
+          project_id?: string | null
+          request_type?: string
+          requester_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          target_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          meeting_at?: string | null
+          meeting_link?: string | null
+          message?: string | null
+          opportunity_id?: string | null
+          project_id?: string | null
+          request_type?: string
+          requester_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          target_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contributions: {
         Row: {
           amount: number
@@ -1839,6 +1893,7 @@ export type Database = {
           name: string
           price: number
           sort_order: number | null
+          target_profile: string
           updated_at: string
         }
         Insert: {
@@ -1853,6 +1908,7 @@ export type Database = {
           name: string
           price?: number
           sort_order?: number | null
+          target_profile?: string
           updated_at?: string
         }
         Update: {
@@ -1867,6 +1923,7 @@ export type Database = {
           name?: string
           price?: number
           sort_order?: number | null
+          target_profile?: string
           updated_at?: string
         }
         Relationships: []
@@ -2049,6 +2106,7 @@ export type Database = {
         Args: { _provider: string }
         Returns: number
       }
+      is_any_admin: { Args: { _user_id: string }; Returns: boolean }
       is_email_unsubscribed: { Args: { _email: string }; Returns: boolean }
       pick_email_provider: { Args: never; Returns: string }
       user_profile_type: { Args: { _user_id: string }; Returns: string }

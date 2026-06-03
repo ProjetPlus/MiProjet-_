@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { useSEO } from "@/components/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -66,9 +66,9 @@ const TenderDetail = () => {
   const days = Math.ceil((+dl - Date.now()) / 86400000);
   const archived = tender.status === "archived";
 
+  useSEO({ title: tender.notice_title, description: tender.summary || "" });
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={`${tender.notice_title} — MIPROJET`} description={tender.summary || ""} />
       <Navigation />
       <main className="pt-28 pb-16">
         <div className="container-luxe max-w-4xl">

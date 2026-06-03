@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { useSEO } from "@/components/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -88,12 +88,13 @@ const Tenders = () => {
   const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   useEffect(() => setPage(1), [search, country, sector, sort]);
 
+  useSEO({
+    title: "Appels d'offres",
+    description: "Découvrez chaque jour les appels d'offres publics et privés d'Afrique et du monde sur MIPROJET.",
+  });
+
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead
-        title="Appels d'offres — MIPROJET"
-        description="Découvrez chaque jour les appels d'offres publics et privés d'Afrique et du monde sur MIPROJET."
-      />
       <Navigation />
       <main className="pt-32 pb-16">
         {/* Hero */}

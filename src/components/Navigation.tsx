@@ -263,15 +263,25 @@ export const Navigation = () => {
             </div>
 
             {/* Mobile button */}
-            <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex items-center gap-1.5 lg:hidden">
+              <Link to="/appels-doffres">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full h-9 px-3 font-bold text-xs border-2 border-accent text-accent"
+                >
+                  <Briefcase className="h-3.5 w-3.5 mr-1" />
+                  Offres
+                </Button>
+              </Link>
               <Link to="/miprojet-plus">
                 <Button
                   size="sm"
-                  className="rounded-full h-9 px-3.5 font-bold text-white text-xs"
+                  className="rounded-full h-9 px-3 font-bold text-white text-xs"
                   style={{ background: "var(--gradient-brand)" }}
                 >
                   <Sparkles className="h-3.5 w-3.5 mr-1" />
-                  MiProjet+
+                  MP+
                 </Button>
               </Link>
               <button

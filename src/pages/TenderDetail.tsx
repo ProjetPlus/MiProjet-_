@@ -40,6 +40,8 @@ const TenderDetail = () => {
     })();
   }, [slug]);
 
+  useSEO({ title: tender?.notice_title || "Appel d'offre", description: tender?.summary || "" });
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -66,7 +68,6 @@ const TenderDetail = () => {
   const days = Math.ceil((+dl - Date.now()) / 86400000);
   const archived = tender.status === "archived";
 
-  useSEO({ title: tender.notice_title, description: tender.summary || "" });
   return (
     <div className="min-h-screen bg-background">
       <Navigation />

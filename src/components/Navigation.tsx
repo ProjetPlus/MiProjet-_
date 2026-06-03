@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown, Search, Phone, Sparkles } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown, Search, Phone, Sparkles, Briefcase } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
@@ -172,6 +172,18 @@ export const Navigation = () => {
               </button>
 
               <LanguageSelector />
+
+              {/* Appels d'offres — pill accent */}
+              <Link to="/appels-doffres" className="ml-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full px-4 h-10 font-bold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all"
+                >
+                  <Briefcase className="h-4 w-4 mr-1.5" />
+                  Appels d'offres
+                </Button>
+              </Link>
 
               {/* MiProjet+ — detached pill (Belife "Belife & Moi" style) */}
               <Link to="/miprojet-plus" className="ml-1">

@@ -142,15 +142,20 @@ export const AdminTendersManager = () => {
           };
         }).filter(Boolean);
 
+        // Insert with ON CONFLICT DO NOTHING to skip duplicates only,
+        // letting every new row pass without blocking the whole batch.
         const { data: ins, error } = await (supabase as any)
           .from("tenders")
           .upsert(slice, { onConflict: "notice_title,notice_deadline", ignoreDuplicates: true })
           .select("id");
-        if (error) console.error(error);
-        const did = (ins?.length || 0);
+        if (error) {
+          console.error("[tenders import]", error);
+          toast({ title: "Erreur SQL", description: error.message, variant: "destructive" });
+        }
+        const did = ins?.length || 0;
         inserted += did;
         skipped += slice.length - did;
-        setProgress(Math.round(((i + CHUNK) / rows.length) * 100));
+        setProgress(Math.min(100, Math.round(((i + CHUNK) / rows.length) * 100)));
       }
 
       await (supabase as any).from("tender_import_batches").update({

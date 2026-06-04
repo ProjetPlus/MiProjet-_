@@ -1928,6 +1928,111 @@ export type Database = {
         }
         Relationships: []
       }
+      tender_import_batches: {
+        Row: {
+          created_at: string | null
+          duplicate_rows: number | null
+          filename: string
+          id: string
+          imported_rows: number | null
+          total_rows: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          duplicate_rows?: number | null
+          filename: string
+          id?: string
+          imported_rows?: number | null
+          total_rows?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          duplicate_rows?: number | null
+          filename?: string
+          id?: string
+          imported_rows?: number | null
+          total_rows?: number | null
+        }
+        Relationships: []
+      }
+      tender_subscribers: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      tenders: {
+        Row: {
+          country_code: string | null
+          country_name: string | null
+          created_at: string | null
+          id: string
+          notice_deadline: string | null
+          notice_title: string
+          sector: string | null
+          slug: string | null
+          status: string | null
+          summary: string | null
+          summary_en: string | null
+          summary_fr: string | null
+          title_en: string | null
+          title_fr: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string | null
+          id?: string
+          notice_deadline?: string | null
+          notice_title: string
+          sector?: string | null
+          slug?: string | null
+          status?: string | null
+          summary?: string | null
+          summary_en?: string | null
+          summary_fr?: string | null
+          title_en?: string | null
+          title_fr?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string | null
+          id?: string
+          notice_deadline?: string | null
+          notice_title?: string
+          sector?: string | null
+          slug?: string | null
+          status?: string | null
+          summary?: string | null
+          summary_en?: string | null
+          summary_fr?: string | null
+          title_en?: string | null
+          title_fr?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: []
+      }
       user_journeys: {
         Row: {
           created_at: string
@@ -2068,6 +2173,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      archive_expired_tenders: { Args: never; Returns: undefined }
       build_short_slug: {
         Args: { _prefix: string; _rank: number; _ts: string }
         Returns: string
@@ -2105,6 +2211,10 @@ export type Database = {
       increment_email_provider_usage: {
         Args: { _provider: string }
         Returns: number
+      }
+      increment_tender_views: {
+        Args: { tender_id: string }
+        Returns: undefined
       }
       is_any_admin: { Args: { _user_id: string }; Returns: boolean }
       is_email_unsubscribed: { Args: { _email: string }; Returns: boolean }

@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, MapPin, Briefcase, Eye, Lock, Bell } from "lucide-react";
+import { TenderInterestButton } from "@/components/tenders/TenderInterestButton";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -137,25 +138,21 @@ const TenderDetail = () => {
 
               <div className="mt-8 pt-6 border-t border-border">
                 <div className="rounded-xl p-6 text-white" style={{ background: "var(--gradient-brand)" }}>
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-start gap-3 mb-4">
                     <Lock className="h-5 w-5 mt-0.5" />
                     <div>
-                      <p className="font-bold text-lg">Accéder à l'offre complète</p>
+                      <p className="font-bold text-lg">Vous êtes intéressé(e) par cet appel d'offre ?</p>
                       <p className="text-white/90 text-sm">
-                        Inscrivez-vous gratuitement sur MIPROJET pour consulter le dossier complet,
-                        recevoir les alertes ciblées et accéder aux archives premium.
+                        Manifestez votre intérêt en un clic. MIPROJET et son partenaire{" "}
+                        <span className="font-semibold">dgMarket</span> vous accompagnent dans le montage du dossier.
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    <TenderInterestButton tenderId={tender.id} tenderTitle={tender.notice_title} />
                     <Link to="/auth">
-                      <Button className="bg-white text-primary hover:bg-white/90 font-bold">
+                      <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 font-bold">
                         <Bell className="h-4 w-4 mr-1.5" /> Créer un compte
-                      </Button>
-                    </Link>
-                    <Link to="/subscription">
-                      <Button variant="outline" className="border-white/40 text-white hover:bg-white/10">
-                        Voir les abonnements
                       </Button>
                     </Link>
                   </div>

@@ -29,6 +29,7 @@ const menuGroups = [
       { id: "projects", label: "Projets", icon: FolderKanban },
       { id: "opportunities", label: "Opportunités", icon: Briefcase },
       { id: "tenders", label: "Appels d'offres", icon: Briefcase },
+      { id: "tender-leads", label: "Prospects AO (dgMarket)", icon: UserCheck },
       { id: "news", label: "Actualités", icon: Newspaper },
       { id: "documents", label: "Documents", icon: FileDown },
       { id: "faq", label: "FAQ", icon: HelpCircle },

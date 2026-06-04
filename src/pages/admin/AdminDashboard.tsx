@@ -42,6 +42,7 @@ import { AdminMPCertificationsManager } from "@/components/admin/AdminMPCertific
 import { AdminMPAnalytics } from "@/components/admin/AdminMPAnalytics";
 import { AdminMaintenanceManager } from "@/components/admin/AdminMaintenanceManager";
 import { AdminTendersManager } from "@/components/admin/AdminTendersManager";
+import { AdminTenderLeadsManager } from "@/components/admin/AdminTenderLeadsManager";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading, adminChecked, signOut } = useAuth();
@@ -241,6 +242,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="tenders" className="space-y-6">
               <AdminTendersManager />
+            </TabsContent>
+
+            <TabsContent value="tender-leads" className="space-y-6">
+              <AdminTenderLeadsManager />
             </TabsContent>
 
             <TabsContent value="leads" className="space-y-6">

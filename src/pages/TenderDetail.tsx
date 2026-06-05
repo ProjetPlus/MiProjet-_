@@ -11,6 +11,8 @@ import { ArrowLeft, Calendar, MapPin, Briefcase, Eye, Lock, Bell } from "lucide-
 import { TenderInterestButton } from "@/components/tenders/TenderInterestButton";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { getTenderSummary, getTenderTitle, translateTenderBatch, type TenderTranslation } from "@/lib/tenderTranslations";
 
 const flagEmoji = (iso: string) => {
   if (!iso || iso.length !== 2) return "🌍";
@@ -23,6 +25,8 @@ const TenderDetail = () => {
   const navigate = useNavigate();
   const [tender, setTender] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [translation, setTranslation] = useState<TenderTranslation | undefined>();
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (!slug) return;
@@ -41,7 +45,15 @@ const TenderDetail = () => {
     })();
   }, [slug]);
 
-  useSEO({ title: tender?.notice_title || "Appel d'offre", description: tender?.summary || "" });
+  useEffect(() => {
+    if (!tender) return;
+    translateTenderBatch([tender], language).then((rows) => setTranslation(rows[tender.id]));
+  }, [tender, language]);
+
+  const displayTitle = tender ? getTenderTitle(tender, language, translation) : "Appel d'offre";
+  const displaySummary = tender ? getTenderSummary(tender, language, translation) : "";
+
+  useSEO({ title: displayTitle, description: displaySummary || "" });
 
   if (loading) {
     return (
@@ -91,7 +103,7 @@ const TenderDetail = () => {
                 {archived && <Badge variant="destructive">Expiré</Badge>}
               </div>
 
-              <h1 className="text-2xl md:text-4xl font-bold leading-tight mb-4">{tender.notice_title}</h1>
+              <h1 className="text-2xl md:text-4xl font-bold leading-tight mb-4">{displayTitle}</h1>
 
               <div className="grid sm:grid-cols-3 gap-4 my-6 p-4 rounded-xl bg-muted/40">
                 <div className="flex items-start gap-3">
@@ -118,10 +130,10 @@ const TenderDetail = () => {
                 </div>
               </div>
 
-              {tender.summary && (
+              {displaySummary && (
                 <div className="prose prose-neutral max-w-none">
                   <h2 className="text-lg font-semibold mb-2">Résumé</h2>
-                  <p className="text-muted-foreground leading-relaxed">{tender.summary}</p>
+                  <p className="text-muted-foreground leading-relaxed">{displaySummary}</p>
                 </div>
               )}
 
@@ -149,9 +161,9 @@ const TenderDetail = () => {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <TenderInterestButton tenderId={tender.id} tenderTitle={tender.notice_title} />
+                    <TenderInterestButton tenderId={tender.id} tenderTitle={displayTitle} />
                     <Link to="/auth">
-                      <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 font-bold">
+                      <Button variant="outline" className="border-white/50 bg-white text-primary hover:bg-white/90 font-bold">
                         <Bell className="h-4 w-4 mr-1.5" /> Créer un compte
                       </Button>
                     </Link>

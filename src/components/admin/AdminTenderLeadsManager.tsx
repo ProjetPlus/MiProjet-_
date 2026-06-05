@@ -12,15 +12,15 @@ import { fr } from "date-fns/locale";
 type Interest = {
   id: string;
   tender_id: string;
-  full_name: string;
+  nom: string;
   email: string;
-  phone: string | null;
-  company: string | null;
-  country: string | null;
-  sector: string | null;
+  telephone: string | null;
+  entreprise: string | null;
+  pays: string | null;
+  secteur: string | null;
   message: string | null;
   created_at: string;
-  tender?: { notice_title: string; org_country: string; sector: string | null } | null;
+  tender?: { notice_title: string; country_code: string | null; country_name: string | null; sector: string | null } | null;
 };
 
 export const AdminTenderLeadsManager = () => {
@@ -32,7 +32,7 @@ export const AdminTenderLeadsManager = () => {
     setLoading(true);
     const { data } = await (supabase as any)
       .from("tender_interests")
-      .select("*, tender:tenders(notice_title, org_country, sector)")
+      .select("*, tender:tenders(notice_title, country_code, country_name, sector)")
       .order("created_at", { ascending: false })
       .limit(2000);
     setItems((data as Interest[]) || []);
@@ -44,7 +44,7 @@ export const AdminTenderLeadsManager = () => {
     const s = q.trim().toLowerCase();
     if (!s) return items;
     return items.filter((i) =>
-      [i.full_name, i.email, i.company, i.country, i.sector, i.tender?.notice_title]
+      [i.nom, i.email, i.entreprise, i.pays, i.secteur, i.tender?.notice_title]
         .some((v) => (v || "").toLowerCase().includes(s))
     );
   }, [items, q]);
@@ -53,8 +53,8 @@ export const AdminTenderLeadsManager = () => {
     const head = ["Date", "Nom", "Email", "Téléphone", "Entreprise", "Pays", "Secteur", "Appel d'offre", "Pays AO", "Message"];
     const rows = filtered.map((i) => [
       format(new Date(i.created_at), "yyyy-MM-dd HH:mm"),
-      i.full_name, i.email, i.phone || "", i.company || "", i.country || "", i.sector || "",
-      i.tender?.notice_title || "", i.tender?.org_country || "", (i.message || "").replace(/\n/g, " "),
+      i.nom, i.email, i.telephone || "", i.entreprise || "", i.pays || "", i.secteur || "",
+      i.tender?.notice_title || "", i.tender?.country_name || i.tender?.country_code || "", (i.message || "").replace(/\n/g, " "),
     ]);
     const csv = [head, ...rows]
       .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
@@ -86,8 +86,8 @@ export const AdminTenderLeadsManager = () => {
 
       <div className="grid sm:grid-cols-3 gap-3">
         <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Total prospects</p><p className="text-2xl font-bold">{items.length}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Avec téléphone</p><p className="text-2xl font-bold">{items.filter(i => i.phone).length}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Avec entreprise</p><p className="text-2xl font-bold">{items.filter(i => i.company).length}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Avec téléphone</p><p className="text-2xl font-bold">{items.filter(i => i.telephone).length}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Avec entreprise</p><p className="text-2xl font-bold">{items.filter(i => i.entreprise).length}</p></CardContent></Card>
       </div>
 
       <Card>
@@ -120,19 +120,19 @@ export const AdminTenderLeadsManager = () => {
                     {format(new Date(i.created_at), "dd MMM yy HH:mm", { locale: fr })}
                   </TableCell>
                   <TableCell>
-                    <p className="font-semibold">{i.full_name}</p>
+                    <p className="font-semibold">{i.nom}</p>
                     <p className="text-xs text-muted-foreground flex items-center gap-1"><Mail className="h-3 w-3" />{i.email}</p>
-                    {i.phone && <p className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" />{i.phone}</p>}
+                    {i.telephone && <p className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" />{i.telephone}</p>}
                   </TableCell>
                   <TableCell className="text-sm">
-                    {i.company ? (<><Building2 className="h-3 w-3 inline mr-1" />{i.company}</>) : "—"}
-                    {i.country && <p className="text-xs text-muted-foreground">{i.country}</p>}
+                    {i.entreprise ? (<><Building2 className="h-3 w-3 inline mr-1" />{i.entreprise}</>) : "—"}
+                    {i.pays && <p className="text-xs text-muted-foreground">{i.pays}</p>}
                   </TableCell>
                   <TableCell className="max-w-sm">
                     <p className="text-sm line-clamp-2">{i.tender?.notice_title || "—"}</p>
-                    <p className="text-xs text-muted-foreground">{i.tender?.org_country}</p>
+                    <p className="text-xs text-muted-foreground">{i.tender?.country_name || i.tender?.country_code}</p>
                   </TableCell>
-                  <TableCell>{i.sector ? <Badge variant="secondary">{i.sector}</Badge> : "—"}</TableCell>
+                  <TableCell>{i.secteur ? <Badge variant="secondary">{i.secteur}</Badge> : "—"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

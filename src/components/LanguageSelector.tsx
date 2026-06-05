@@ -18,16 +18,24 @@ const flags: Record<Language, string> = {
   de: '🇩🇪',
 };
 
+const languageAbbr: Record<Language, string> = {
+  fr: "Fr.",
+  en: "En.",
+  ar: "Ar.",
+  zh: "Zh.",
+  es: "Es.",
+  de: "De.",
+};
+
 export const LanguageSelector = () => {
   const { language, setLanguage, languageNames } = useLanguage();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button variant="ghost" size="sm" className="gap-1.5 px-2.5">
           <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{flags[language]} {languageNames[language]}</span>
-          <span className="sm:hidden">{flags[language]}</span>
+          <span>{languageAbbr[language]}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[150px]">
@@ -38,7 +46,7 @@ export const LanguageSelector = () => {
             className={`cursor-pointer ${language === lang ? 'bg-primary/10 text-primary' : ''}`}
           >
             <span className="mr-2">{flags[lang]}</span>
-            {languageNames[lang]}
+            {languageAbbr[lang]}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

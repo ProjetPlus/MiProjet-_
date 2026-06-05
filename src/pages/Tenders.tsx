@@ -18,6 +18,8 @@ import {
 import { Calendar, MapPin, Search, Briefcase, ArrowRight, Bell } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { getTenderSummary, getTenderTitle, translateTenderBatch, type TenderTranslation } from "@/lib/tenderTranslations";
 
 type Tender = {
   id: string;
@@ -27,6 +29,10 @@ type Tender = {
   country_name: string | null;
   sector: string | null;
   summary: string | null;
+  title_fr?: string | null;
+  title_en?: string | null;
+  summary_fr?: string | null;
+  summary_en?: string | null;
   slug: string | null;
   views_count: number | null;
 };
@@ -45,14 +51,16 @@ const Tenders = () => {
   const [sector, setSector] = useState<string>("all");
   const [sort, setSort] = useState<"deadline" | "newest">("deadline");
   const [page, setPage] = useState(1);
-  const PER_PAGE = 24;
+  const [translations, setTranslations] = useState<Record<string, TenderTranslation>>({});
+  const { language } = useLanguage();
+  const PER_PAGE = 36;
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       const { data, error } = await (supabase as any)
         .from("tenders")
-        .select("id,notice_title,notice_deadline,country_code,country_name,sector,summary,slug,views_count")
+        .select("id,notice_title,notice_deadline,country_code,country_name,sector,summary,title_fr,title_en,summary_fr,summary_en,slug,views_count")
         .eq("status", "active")
         .order("notice_deadline", { ascending: true })
         .limit(2000);
@@ -84,8 +92,15 @@ const Tenders = () => {
   }, [items, search, country, sector, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const paged = useMemo(() => filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE), [filtered, page]);
   useEffect(() => setPage(1), [search, country, sector, sort]);
+  useEffect(() => {
+    let alive = true;
+    translateTenderBatch(paged, language).then((next) => {
+      if (alive && Object.keys(next).length) setTranslations((prev) => ({ ...prev, ...next }));
+    });
+    return () => { alive = false; };
+  }, [paged, language]);
 
   useSEO({
     title: "Appels d'offres",
@@ -99,27 +114,27 @@ const Tenders = () => {
         {/* Hero */}
         <section className="container-luxe">
           <div
-            className="rounded-3xl p-8 md:p-12 text-white shadow-elegant"
+            className="rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-10 text-white shadow-elegant"
             style={{ background: "var(--gradient-brand)" }}
           >
-            <Badge className="bg-white/20 text-white border-white/30 mb-4">
+            <Badge className="bg-white/20 text-white border-white/30 mb-3 md:mb-4">
               <Briefcase className="h-3.5 w-3.5 mr-1.5" /> Mises à jour quotidiennes
             </Badge>
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-3">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight mb-2 md:mb-3">
               Appels d'offres en Afrique & dans le monde
             </h1>
-            <p className="text-white/90 text-lg max-w-3xl">
+            <p className="text-white/90 text-sm sm:text-base md:text-lg max-w-3xl">
               Marchés publics et privés filtrés et résumés pour vous. Trouvez les opportunités
               qui correspondent à votre activité et soumissionnez dans les délais.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-4 md:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Link to="/auth">
-                <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-bold">
+                <Button size="lg" className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 font-bold">
                   <Bell className="h-4 w-4 mr-2" /> Recevoir les alertes
                 </Button>
               </Link>
               <Link to="/subscription">
-                <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/50 bg-primary/20 text-white hover:bg-white hover:text-primary font-semibold">
                   Accéder aux archives Premium
                 </Button>
               </Link>
@@ -176,33 +191,35 @@ const Tenders = () => {
 
         {/* Grid */}
         <section className="container-luxe mt-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
             {paged.map((t) => {
               const dl = new Date(t.notice_deadline);
               const days = Math.ceil((+dl - Date.now()) / 86400000);
               const urgent = days <= 7;
+              const title = getTenderTitle(t, language, translations[t.id]);
+              const summary = getTenderSummary(t, language, translations[t.id]);
               return (
                 <Link key={t.id} to={`/appels-doffres/${t.slug || t.id}`}>
                   <Card className="h-full hover:shadow-elegant transition-all border-border/60 hover:border-primary/40 group">
-                    <CardContent className="p-5 flex flex-col h-full">
-                      <div className="flex items-center justify-between mb-3">
+                    <CardContent className="p-4 flex flex-col h-full">
+                      <div className="flex items-center justify-between gap-2 mb-2.5">
                         <div className="flex items-center gap-2">
-                          <span className="text-2xl leading-none">{flagEmoji(t.country_code)}</span>
+                          <span className="text-xl leading-none">{flagEmoji(t.country_code)}</span>
                           <span className="text-xs font-medium text-muted-foreground">
                             {t.country_name || t.country_code}
                           </span>
                         </div>
                         {t.sector && (
-                          <Badge variant="secondary" className="text-[10px]">{t.sector}</Badge>
+                          <Badge variant="secondary" className="max-w-[120px] truncate text-[10px]">{t.sector}</Badge>
                         )}
                       </div>
-                      <h3 className="font-semibold leading-snug line-clamp-3 group-hover:text-primary transition-colors">
-                        {t.notice_title}
+                      <h3 className="text-sm font-semibold leading-snug line-clamp-3 group-hover:text-primary transition-colors">
+                        {title}
                       </h3>
-                      {t.summary && (
-                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{t.summary}</p>
+                      {summary && (
+                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{summary}</p>
                       )}
-                      <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs">
+                      <div className="mt-auto pt-3 border-t border-border/50 flex items-center justify-between gap-2 text-xs">
                         <span className="flex items-center gap-1.5">
                           <Calendar className="h-3.5 w-3.5" />
                           {format(dl, "dd MMM yyyy", { locale: fr })}

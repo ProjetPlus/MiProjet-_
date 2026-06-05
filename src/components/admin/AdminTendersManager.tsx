@@ -22,6 +22,13 @@ const ISO_COUNTRY: Record<string, string> = {
   NG: "Nigéria", GH: "Ghana", ML: "Mali", CD: "RD Congo", CG: "Congo",
 };
 
+const COUNTRY_TO_ISO = Object.fromEntries(
+  Object.entries(ISO_COUNTRY).flatMap(([iso, name]) => [
+    [name.toLowerCase(), iso],
+    [name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(), iso],
+  ])
+) as Record<string, string>;
+
 const detectSector = (t: string) => {
   const tl = t.toLowerCase();
   const map: [string, string[]][] = [
@@ -77,11 +84,26 @@ const parseCSV = (text: string) => {
 };
 
 const parseDeadline = (s: string) => {
-  // 06/11/2026:00:00:00 -> ISO
-  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4}):(\d{1,2}):(\d{1,2}):(\d{1,2})$/);
+  const raw = (s || "").trim();
+  if (!raw) return null;
+  const iso = new Date(raw.replace(" ", "T"));
+  if (!Number.isNaN(+iso)) return iso.toISOString();
+  const m = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?::|\s)?(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?$/);
   if (!m) return null;
-  const [, mm, dd, yyyy, hh, mi, ss] = m;
+  const [, a, b, yyyy, hh = "0", mi = "0", ss = "0"] = m;
+  const first = Number(a);
+  const second = Number(b);
+  const dd = first > 12 ? a : b;
+  const mm = first > 12 ? b : a;
   return new Date(`${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}T${hh.padStart(2, "0")}:${mi.padStart(2, "0")}:${ss.padStart(2, "0")}Z`).toISOString();
+};
+
+const normalizeCountryCode = (country: string) => {
+  const raw = (country || "").trim();
+  if (!raw) return "";
+  if (/^[a-z]{2}$/i.test(raw)) return raw.toUpperCase();
+  const key = raw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return COUNTRY_TO_ISO[key] || raw.slice(0, 2).toUpperCase();
 };
 
 const norm = (s: string) => (s || "").trim().toLowerCase().replace(/\s+/g, " ");

@@ -48,7 +48,13 @@ const slugify = (s: string) =>
     .replace(/^-|-$/g, "")
     .slice(0, 60);
 
+const splitCSVLine = (line: string) => {
+  const counts = [",", ";", "\t"].map((d) => [d, (line.match(new RegExp(d === "\t" ? "\\t" : d, "g")) || []).length] as const);
+  return counts.sort((a, b) => b[1] - a[1])[0][0];
+};
+
 const parseCSV = (text: string) => {
+  const delimiter = splitCSVLine(text.split(/\r?\n/).find((l) => l.trim()) || ",");
   const lines: string[][] = [];
   let cur: string[] = [];
   let val = "";
@@ -61,7 +67,7 @@ const parseCSV = (text: string) => {
       else val += c;
     } else {
       if (c === '"') inQ = true;
-      else if (c === ",") { cur.push(val); val = ""; }
+      else if (c === delimiter) { cur.push(val); val = ""; }
       else if (c === "\n") { cur.push(val); lines.push(cur); cur = []; val = ""; }
       else if (c !== "\r") val += c;
     }
@@ -78,6 +84,14 @@ const parseDeadline = (s: string) => {
   return new Date(`${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}T${hh.padStart(2, "0")}:${mi.padStart(2, "0")}:${ss.padStart(2, "0")}Z`).toISOString();
 };
 
+const norm = (s: string) => (s || "").trim().toLowerCase().replace(/\s+/g, " ");
+const dateKey = (s: string) => (s || "").slice(0, 10);
+const tenderKey = (title: string, deadline: string | null, country: string) => `${norm(title)}|${dateKey(deadline || "")}|${country || ""}`;
+const pick = (row: string[], headers: string[], names: string[], fallback: number) => {
+  const idx = names.map((n) => headers.indexOf(n)).find((i) => i >= 0);
+  return row[idx ?? fallback] || "";
+};
+
 export const AdminTendersManager = () => {
   const [tab, setTab] = useState("import");
   const [active, setActive] = useState<Tender[]>([]);
@@ -92,7 +106,7 @@ export const AdminTendersManager = () => {
   const reload = async () => {
     const [a, ar, b] = await Promise.all([
       (supabase as any).from("tenders").select("*").eq("status", "active").order("notice_deadline").limit(1000),
-      (supabase as any).from("tenders").select("*").eq("status", "archived").order("archived_at", { ascending: false }).limit(500),
+      (supabase as any).from("tenders").select("*").eq("status", "archived").order("updated_at", { ascending: false }).limit(500),
       (supabase as any).from("tender_import_batches").select("*").order("created_at", { ascending: false }).limit(100),
     ]);
     setActive(a.data || []);
@@ -109,63 +123,77 @@ export const AdminTendersManager = () => {
     try {
       const text = await file.text();
       const rows = parseCSV(text);
-      const header = rows.shift();
+      const header = rows.shift()?.map((h) => h.trim().toLowerCase());
       if (!header) throw new Error("CSV vide");
 
-      const { data: { user } } = await supabase.auth.getUser();
       const { data: batch } = await (supabase as any)
         .from("tender_import_batches")
-        .insert({ filename: file.name, total_rows: rows.length, status: "processing", imported_by: user?.id })
+        .insert({ filename: file.name, total_rows: rows.length, imported_rows: 0, duplicate_rows: 0 })
         .select()
         .single();
+
+      const { data: existing } = await (supabase as any)
+        .from("tenders")
+        .select("notice_title,notice_deadline,country_code")
+        .limit(10000);
+      const seen = new Set((existing || []).map((t: any) => tenderKey(t.notice_title, t.notice_deadline, t.country_code || "")));
+      const fileSeen = new Set<string>();
 
       let inserted = 0, skipped = 0;
       const CHUNK = 100;
       for (let i = 0; i < rows.length; i += CHUNK) {
         const slice = rows.slice(i, i + CHUNK).map((r) => {
-          const [title, deadline, country] = r;
+          const title = pick(r, header, ["notice_title", "title", "titre", "objet"], 0);
+          const deadline = pick(r, header, ["notice_deadline", "deadline", "date limite", "date_limite"], 1);
+          const country = pick(r, header, ["country_code", "org_country", "country", "pays"], 2);
           const dl = parseDeadline((deadline || "").trim());
-          if (!title || !dl) return null;
+          if (!title || !dl) { skipped++; return null; }
           const iso = (country || "").trim().toUpperCase();
+          const key = tenderKey(title, dl, iso);
+          if (seen.has(key) || fileSeen.has(key)) { skipped++; return null; }
+          fileSeen.add(key);
           const cn = ISO_COUNTRY[iso] || iso;
           const sector = detectSector(title);
           return {
             notice_title: title.trim(),
             notice_deadline: dl,
-            org_country: iso,
+            country_code: iso,
+            country: iso,
+            deadline: dl,
             country_name: cn,
             sector,
             summary: `Appel d'offres publié au ${cn} dans le secteur ${sector}. Objet : ${title.slice(0, 140)}.`,
+            title_en: title.trim(),
+            summary_fr: `Appel d'offres publié au ${cn} dans le secteur ${sector}. Objet : ${title.slice(0, 140)}.`,
             slug: `${slugify(title)}-${Math.random().toString(36).slice(2, 8)}`,
             status: "active",
-            source_batch_id: batch?.id,
           };
         }).filter(Boolean);
 
-        // Insert with ON CONFLICT DO NOTHING to skip duplicates only,
-        // letting every new row pass without blocking the whole batch.
-        const { data: ins, error } = await (supabase as any)
-          .from("tenders")
-          .upsert(slice, { onConflict: "notice_title,notice_deadline", ignoreDuplicates: true })
-          .select("id");
+        if (!slice.length) {
+          setProgress(Math.min(100, Math.round(((i + CHUNK) / rows.length) * 100)));
+          continue;
+        }
+        const { data: ins, error } = await (supabase as any).from("tenders").insert(slice).select("id,notice_title,notice_deadline,country_code");
         if (error) {
           console.error("[tenders import]", error);
           toast({ title: "Erreur SQL", description: error.message, variant: "destructive" });
+          skipped += slice.length;
+          continue;
         }
         const did = ins?.length || 0;
         inserted += did;
-        skipped += slice.length - did;
+        (ins || []).forEach((t: any) => seen.add(tenderKey(t.notice_title, t.notice_deadline, t.country_code || "")));
         setProgress(Math.min(100, Math.round(((i + CHUNK) / rows.length) * 100)));
       }
 
       await (supabase as any).from("tender_import_batches").update({
-        inserted_count: inserted,
-        skipped_count: rows.length - inserted,
-        status: "done",
+        imported_rows: inserted,
+        duplicate_rows: skipped,
       }).eq("id", batch?.id);
 
-      setReport({ inserted, skipped: rows.length - inserted, total: rows.length });
-      toast({ title: "Import terminé", description: `${inserted} ajoutés, ${rows.length - inserted} doublons ignorés.` });
+      setReport({ inserted, skipped, total: rows.length });
+      toast({ title: "Import terminé", description: `${inserted} ajoutés, ${skipped} doublons ou lignes invalides ignorés.` });
       reload();
     } catch (e: any) {
       toast({ title: "Erreur d'import", description: e.message, variant: "destructive" });
@@ -175,11 +203,11 @@ export const AdminTendersManager = () => {
   };
 
   const archiveOne = async (id: string) => {
-    await (supabase as any).from("tenders").update({ status: "archived", archived_at: new Date().toISOString() }).eq("id", id);
+    await (supabase as any).from("tenders").update({ status: "archived", updated_at: new Date().toISOString() }).eq("id", id);
     reload();
   };
   const restoreOne = async (id: string) => {
-    await (supabase as any).from("tenders").update({ status: "active", archived_at: null }).eq("id", id);
+    await (supabase as any).from("tenders").update({ status: "active", updated_at: new Date().toISOString() }).eq("id", id);
     reload();
   };
   const deleteOne = async (id: string) => {
@@ -218,7 +246,7 @@ export const AdminTendersManager = () => {
               >
                 <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
                 <p className="font-semibold">Glissez-déposez votre fichier .csv ici</p>
-                <p className="text-sm text-muted-foreground">ou cliquez pour parcourir — colonnes attendues : notice_title, notice_deadline, org_country</p>
+                <p className="text-sm text-muted-foreground">ou cliquez pour parcourir — colonnes attendues : notice_title, notice_deadline, country_code</p>
                 <input ref={fileRef} type="file" accept=".csv" hidden onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
               </div>
               {importing && (
@@ -254,10 +282,10 @@ export const AdminTendersManager = () => {
                   {filter(active).slice(0, 200).map((t) => (
                     <TableRow key={t.id}>
                       <TableCell className="max-w-md truncate">{t.notice_title}</TableCell>
-                      <TableCell>{t.country_name || t.org_country}</TableCell>
+                      <TableCell>{t.country_name || t.country_code || t.country}</TableCell>
                       <TableCell><Badge variant="secondary">{t.sector || "—"}</Badge></TableCell>
                       <TableCell className="text-xs">{format(new Date(t.notice_deadline), "dd MMM yy", { locale: fr })}</TableCell>
-                      <TableCell>{t.view_count || 0}</TableCell>
+                      <TableCell>{t.views_count || t.view_count || 0}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           <Button size="sm" variant="ghost" asChild><a href={`/appels-doffres/${t.slug || t.id}`} target="_blank" rel="noopener"><ExternalLink className="h-3.5 w-3.5" /></a></Button>
@@ -284,8 +312,8 @@ export const AdminTendersManager = () => {
                   {archived.slice(0, 200).map((t) => (
                     <TableRow key={t.id}>
                       <TableCell className="max-w-md truncate">{t.notice_title}</TableCell>
-                      <TableCell>{t.country_name || t.org_country}</TableCell>
-                      <TableCell className="text-xs">{t.archived_at ? format(new Date(t.archived_at), "dd MMM yy", { locale: fr }) : "—"}</TableCell>
+                      <TableCell>{t.country_name || t.country_code || t.country}</TableCell>
+                      <TableCell className="text-xs">{t.updated_at ? format(new Date(t.updated_at), "dd MMM yy", { locale: fr }) : "—"}</TableCell>
                       <TableCell>
                         <Button size="sm" variant="ghost" onClick={() => restoreOne(t.id)}><RotateCcw className="h-3.5 w-3.5 mr-1" /> Restaurer</Button>
                         <Button size="sm" variant="ghost" onClick={() => deleteOne(t.id)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
@@ -311,9 +339,9 @@ export const AdminTendersManager = () => {
                       <TableCell className="text-xs">{format(new Date(b.created_at), "dd MMM yy HH:mm", { locale: fr })}</TableCell>
                       <TableCell className="truncate max-w-xs">{b.filename}</TableCell>
                       <TableCell>{b.total_rows}</TableCell>
-                      <TableCell className="text-emerald-600 font-semibold">{b.inserted_count}</TableCell>
-                      <TableCell className="text-muted-foreground">{b.skipped_count}</TableCell>
-                      <TableCell><Badge variant={b.status === "done" ? "default" : b.status === "error" ? "destructive" : "secondary"}>{b.status}</Badge></TableCell>
+                      <TableCell className="text-emerald-600 font-semibold">{b.imported_rows || 0}</TableCell>
+                      <TableCell className="text-muted-foreground">{b.duplicate_rows || 0}</TableCell>
+                      <TableCell><Badge variant="default">terminé</Badge></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

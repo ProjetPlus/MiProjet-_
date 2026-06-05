@@ -120,12 +120,12 @@ export const Navigation = () => {
             </Link>
 
             {/* Desktop centered nav */}
-            <div className="hidden lg:flex items-center justify-center flex-1 px-6">
+            <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-3 xl:px-6">
               <NavigationMenu>
-                <NavigationMenuList className="gap-1">
+                <NavigationMenuList className="gap-0 xl:gap-1">
                   {groups.map((g) => (
                     <NavigationMenuItem key={g.key}>
-                      <NavigationMenuTrigger className="text-[13.5px] font-semibold bg-transparent h-10 px-3.5 data-[state=open]:text-primary hover:text-primary">
+                      <NavigationMenuTrigger className="text-[13px] xl:text-[13.5px] font-semibold bg-transparent h-10 px-2.5 xl:px-3.5 data-[state=open]:text-primary hover:text-primary">
                         {g.label}
                       </NavigationMenuTrigger>
                       <NavigationMenuContent>
@@ -152,7 +152,7 @@ export const Navigation = () => {
                   <NavigationMenuItem>
                     <Link
                       to="/contact"
-                      className="text-[13.5px] font-semibold px-3.5 py-2 hover:text-primary transition-colors whitespace-nowrap"
+                      className="text-[13px] xl:text-[13.5px] font-semibold px-2.5 xl:px-3.5 py-2 hover:text-primary transition-colors whitespace-nowrap"
                     >
                       Contact
                     </Link>
@@ -162,7 +162,7 @@ export const Navigation = () => {
             </div>
 
             {/* Right cluster */}
-            <div className="hidden lg:flex items-center gap-2 shrink-0">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
               <button
                 aria-label="Rechercher"
                 className="h-9 w-9 grid place-items-center rounded-full hover:bg-muted text-foreground/70 hover:text-primary transition-colors"
@@ -172,18 +172,6 @@ export const Navigation = () => {
               </button>
 
               <LanguageSelector />
-
-              {/* Appels d'offres — pill accent */}
-              <Link to="/appels-doffres" className="ml-1">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="rounded-full px-4 h-10 font-bold border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all"
-                >
-                  <Briefcase className="h-4 w-4 mr-1.5" />
-                  Appels d'offres
-                </Button>
-              </Link>
 
               {/* MiProjet+ — detached pill (Belife "Belife & Moi" style) */}
               <Link to="/miprojet-plus" className="ml-1">
@@ -196,16 +184,6 @@ export const Navigation = () => {
                   MiProjet+
                 </Button>
               </Link>
-
-              {/* Phone pill */}
-              <a
-                href="tel:+22507071679"
-                aria-label="Téléphone"
-                className="h-10 w-10 grid place-items-center rounded-full text-white shadow-md hover:shadow-lg transition-all hover:scale-105"
-                style={{ background: "hsl(var(--accent))" }}
-              >
-                <Phone className="h-4 w-4" />
-              </a>
 
               {/* User */}
               {user ? (

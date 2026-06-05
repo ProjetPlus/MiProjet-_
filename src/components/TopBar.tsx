@@ -3,7 +3,7 @@ import { Briefcase, Facebook, Linkedin, Instagram, Youtube } from "lucide-react"
 
 export const TopBar = () => {
   return (
-    <div className="hidden md:block bg-gradient-to-r from-accent via-accent to-secondary text-accent-foreground text-xs">
+    <div className="hidden lg:block bg-gradient-to-r from-accent via-accent to-secondary text-accent-foreground text-[11px] xl:text-xs">
       <div className="container-luxe flex items-center justify-center gap-4 xl:gap-6 h-9 overflow-hidden">
         <div className="flex items-center justify-center gap-2.5 xl:gap-4 font-medium min-w-0 flex-1">
           <Link to="/appels-doffres" className="inline-flex items-center gap-1.5 rounded-full border border-accent-foreground/45 bg-background/95 px-3 py-1 font-bold text-primary shadow-sm hover:bg-background transition-colors whitespace-nowrap">

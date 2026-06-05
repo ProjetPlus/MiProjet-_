@@ -23,13 +23,12 @@ type Tender = {
   id: string;
   notice_title: string;
   notice_deadline: string;
-  org_country: string;
+  country_code: string;
   country_name: string | null;
   sector: string | null;
   summary: string | null;
-  keywords: string[] | null;
   slug: string | null;
-  view_count: number | null;
+  views_count: number | null;
 };
 
 const flagEmoji = (iso: string) => {

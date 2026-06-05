@@ -170,7 +170,7 @@ export const AdminTendersManager = () => {
           const country = pick(r, header, ["country_code", "org_country", "country", "pays"], 2);
           const dl = parseDeadline((deadline || "").trim());
           if (!title || !dl) { skipped++; return null; }
-          const iso = (country || "").trim().toUpperCase();
+          const iso = normalizeCountryCode(country);
           const key = tenderKey(title, dl, iso);
           if (seen.has(key) || fileSeen.has(key)) { skipped++; return null; }
           fileSeen.add(key);

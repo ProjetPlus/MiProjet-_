@@ -1955,6 +1955,60 @@ export type Database = {
         }
         Relationships: []
       }
+      tender_interests: {
+        Row: {
+          created_at: string
+          email: string
+          entreprise: string | null
+          id: string
+          message: string | null
+          nom: string
+          pays: string | null
+          secteur: string | null
+          telephone: string | null
+          tender_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          entreprise?: string | null
+          id?: string
+          message?: string | null
+          nom: string
+          pays?: string | null
+          secteur?: string | null
+          telephone?: string | null
+          tender_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          entreprise?: string | null
+          id?: string
+          message?: string | null
+          nom?: string
+          pays?: string | null
+          secteur?: string | null
+          telephone?: string | null
+          tender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tender_interests_tender_id_fkey"
+            columns: ["tender_id"]
+            isOneToOne: false
+            referencedRelation: "tenders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tender_interests_tender_id_fkey"
+            columns: ["tender_id"]
+            isOneToOne: false
+            referencedRelation: "tenders_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tender_subscribers: {
         Row: {
           active: boolean | null
@@ -1978,9 +2032,11 @@ export type Database = {
       }
       tenders: {
         Row: {
+          country: string | null
           country_code: string | null
           country_name: string | null
           created_at: string | null
+          deadline: string | null
           id: string
           notice_deadline: string | null
           notice_title: string
@@ -1993,12 +2049,15 @@ export type Database = {
           title_en: string | null
           title_fr: string | null
           updated_at: string | null
+          view_count: number
           views_count: number | null
         }
         Insert: {
+          country?: string | null
           country_code?: string | null
           country_name?: string | null
           created_at?: string | null
+          deadline?: string | null
           id?: string
           notice_deadline?: string | null
           notice_title: string
@@ -2011,12 +2070,15 @@ export type Database = {
           title_en?: string | null
           title_fr?: string | null
           updated_at?: string | null
+          view_count?: number
           views_count?: number | null
         }
         Update: {
+          country?: string | null
           country_code?: string | null
           country_name?: string | null
           created_at?: string | null
+          deadline?: string | null
           id?: string
           notice_deadline?: string | null
           notice_title?: string
@@ -2029,6 +2091,7 @@ export type Database = {
           title_en?: string | null
           title_fr?: string | null
           updated_at?: string | null
+          view_count?: number
           views_count?: number | null
         }
         Relationships: []
@@ -2170,7 +2233,75 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      tenders_public: {
+        Row: {
+          country: string | null
+          country_code: string | null
+          country_name: string | null
+          created_at: string | null
+          deadline: string | null
+          id: string | null
+          notice_deadline: string | null
+          sector: string | null
+          slug: string | null
+          status: string | null
+          summary: string | null
+          summary_en: string | null
+          summary_fr: string | null
+          title: string | null
+          title_en: string | null
+          title_fr: string | null
+          updated_at: string | null
+          view_count: number | null
+          views: number | null
+          views_count: number | null
+        }
+        Insert: {
+          country?: string | null
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string | null
+          deadline?: string | null
+          id?: string | null
+          notice_deadline?: string | null
+          sector?: string | null
+          slug?: string | null
+          status?: string | null
+          summary?: string | null
+          summary_en?: string | null
+          summary_fr?: string | null
+          title?: string | null
+          title_en?: string | null
+          title_fr?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+          views?: number | null
+          views_count?: number | null
+        }
+        Update: {
+          country?: string | null
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string | null
+          deadline?: string | null
+          id?: string | null
+          notice_deadline?: string | null
+          sector?: string | null
+          slug?: string | null
+          status?: string | null
+          summary?: string | null
+          summary_en?: string | null
+          summary_fr?: string | null
+          title?: string | null
+          title_en?: string | null
+          title_fr?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+          views?: number | null
+          views_count?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       archive_expired_tenders: { Args: never; Returns: undefined }
@@ -2212,10 +2343,7 @@ export type Database = {
         Args: { _provider: string }
         Returns: number
       }
-      increment_tender_views: {
-        Args: { tender_id: string }
-        Returns: undefined
-      }
+      increment_tender_views: { Args: { _id: string }; Returns: undefined }
       is_any_admin: { Args: { _user_id: string }; Returns: boolean }
       is_email_unsubscribed: { Args: { _email: string }; Returns: boolean }
       pick_email_provider: { Args: never; Returns: string }

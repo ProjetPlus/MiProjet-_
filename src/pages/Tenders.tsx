@@ -23,13 +23,12 @@ type Tender = {
   id: string;
   notice_title: string;
   notice_deadline: string;
-  org_country: string;
+  country_code: string;
   country_name: string | null;
   sector: string | null;
   summary: string | null;
-  keywords: string[] | null;
   slug: string | null;
-  view_count: number | null;
+  views_count: number | null;
 };
 
 const flagEmoji = (iso: string) => {
@@ -53,7 +52,7 @@ const Tenders = () => {
       setLoading(true);
       const { data, error } = await (supabase as any)
         .from("tenders")
-        .select("id,notice_title,notice_deadline,org_country,country_name,sector,summary,keywords,slug,view_count")
+        .select("id,notice_title,notice_deadline,country_code,country_name,sector,summary,slug,views_count")
         .eq("status", "active")
         .order("notice_deadline", { ascending: true })
         .limit(2000);
@@ -64,7 +63,7 @@ const Tenders = () => {
 
   const countries = useMemo(() => {
     const m = new Map<string, string>();
-    items.forEach((t) => m.set(t.org_country, t.country_name || t.org_country));
+    items.forEach((t) => m.set(t.country_code, t.country_name || t.country_code));
     return Array.from(m.entries()).sort((a, b) => a[1].localeCompare(b[1]));
   }, [items]);
   const sectors = useMemo(
@@ -76,7 +75,7 @@ const Tenders = () => {
     let arr = items;
     const q = search.trim().toLowerCase();
     if (q) arr = arr.filter((t) => t.notice_title.toLowerCase().includes(q));
-    if (country !== "all") arr = arr.filter((t) => t.org_country === country);
+    if (country !== "all") arr = arr.filter((t) => t.country_code === country);
     if (sector !== "all") arr = arr.filter((t) => t.sector === sector);
     if (sort === "newest") {
       arr = [...arr].sort((a, b) => +new Date(b.notice_deadline) - +new Date(a.notice_deadline));
@@ -188,9 +187,9 @@ const Tenders = () => {
                     <CardContent className="p-5 flex flex-col h-full">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-2xl leading-none">{flagEmoji(t.org_country)}</span>
+                          <span className="text-2xl leading-none">{flagEmoji(t.country_code)}</span>
                           <span className="text-xs font-medium text-muted-foreground">
-                            {t.country_name || t.org_country}
+                            {t.country_name || t.country_code}
                           </span>
                         </div>
                         {t.sector && (

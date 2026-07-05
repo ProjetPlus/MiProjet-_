@@ -56,6 +56,13 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "access_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
+            referencedColumns: ["id"]
+          },
         ]
       }
       connection_requests: {
@@ -156,6 +163,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contributions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
             referencedColumns: ["id"]
           },
         ]
@@ -405,6 +419,72 @@ export type Database = {
         }
         Relationships: []
       }
+      email_queue: {
+        Row: {
+          attempts: number
+          bypass_unsubscribe_check: boolean | null
+          campaign_id: string | null
+          created_at: string
+          from_address: string | null
+          html: string
+          id: string
+          kind: string | null
+          last_error: string | null
+          recipient_user_id: string | null
+          reply_to: string | null
+          scheduled_for: string
+          sent_at: string | null
+          status: string
+          subject: string
+          text_content: string | null
+          to_email: string
+          unsubscribe_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          bypass_unsubscribe_check?: boolean | null
+          campaign_id?: string | null
+          created_at?: string
+          from_address?: string | null
+          html: string
+          id?: string
+          kind?: string | null
+          last_error?: string | null
+          recipient_user_id?: string | null
+          reply_to?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          subject: string
+          text_content?: string | null
+          to_email: string
+          unsubscribe_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          bypass_unsubscribe_check?: boolean | null
+          campaign_id?: string | null
+          created_at?: string
+          from_address?: string | null
+          html?: string
+          id?: string
+          kind?: string | null
+          last_error?: string | null
+          recipient_user_id?: string | null
+          reply_to?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          text_content?: string | null
+          to_email?: string
+          unsubscribe_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_templates: {
         Row: {
           created_at: string
@@ -462,6 +542,162 @@ export type Database = {
           id?: string
           reason?: string | null
           source?: string | null
+        }
+        Relationships: []
+      }
+      entities: {
+        Row: {
+          city: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          country: string | null
+          cover_url: string | null
+          cover_url_mobile: string | null
+          created_at: string
+          description: string | null
+          entity_type: string | null
+          founded_year: number | null
+          gallery_urls: string[] | null
+          id: string
+          is_public: boolean | null
+          legal_form: string | null
+          logo_url: string | null
+          mp_score: number | null
+          name: string
+          recommendation_level: string | null
+          sector: string | null
+          slug: string
+          socials: Json | null
+          tagline: string | null
+          team_size: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          city?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          country?: string | null
+          cover_url?: string | null
+          cover_url_mobile?: string | null
+          created_at?: string
+          description?: string | null
+          entity_type?: string | null
+          founded_year?: number | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_public?: boolean | null
+          legal_form?: string | null
+          logo_url?: string | null
+          mp_score?: number | null
+          name: string
+          recommendation_level?: string | null
+          sector?: string | null
+          slug: string
+          socials?: Json | null
+          tagline?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          city?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          country?: string | null
+          cover_url?: string | null
+          cover_url_mobile?: string | null
+          created_at?: string
+          description?: string | null
+          entity_type?: string | null
+          founded_year?: number | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_public?: boolean | null
+          legal_form?: string | null
+          logo_url?: string | null
+          mp_score?: number | null
+          name?: string
+          recommendation_level?: string | null
+          sector?: string | null
+          slug?: string
+          socials?: Json | null
+          tagline?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      entity_governance: {
+        Row: {
+          bio: string | null
+          created_at: string
+          full_name: string
+          id: string
+          is_strategic: boolean | null
+          linkedin_url: string | null
+          project_id: string | null
+          role_title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          full_name: string
+          id?: string
+          is_strategic?: boolean | null
+          linkedin_url?: string | null
+          project_id?: string | null
+          role_title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          is_strategic?: boolean | null
+          linkedin_url?: string | null
+          project_id?: string | null
+          role_title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      entity_products: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          market: string | null
+          name: string
+          project_id: string | null
+          revenue_share_pct: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          market?: string | null
+          name: string
+          project_id?: string | null
+          revenue_share_pct?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          market?: string | null
+          name?: string
+          project_id?: string | null
+          revenue_share_pct?: number | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -528,6 +764,69 @@ export type Database = {
           is_completed?: boolean | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      investor_prospects: {
+        Row: {
+          admin_notes: string | null
+          country: string | null
+          created_at: string
+          email: string
+          engagement_type: string[] | null
+          equity_share_pct: number | null
+          expected_return_pct: number | null
+          full_name: string
+          id: string
+          investment_capacity: string | null
+          message: string | null
+          phone: string | null
+          project_id: string
+          status: string | null
+          time_horizon: string | null
+          updated_at: string
+          user_id: string | null
+          wants_equity: boolean | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          engagement_type?: string[] | null
+          equity_share_pct?: number | null
+          expected_return_pct?: number | null
+          full_name: string
+          id?: string
+          investment_capacity?: string | null
+          message?: string | null
+          phone?: string | null
+          project_id: string
+          status?: string | null
+          time_horizon?: string | null
+          updated_at?: string
+          user_id?: string | null
+          wants_equity?: boolean | null
+        }
+        Update: {
+          admin_notes?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          engagement_type?: string[] | null
+          equity_share_pct?: number | null
+          expected_return_pct?: number | null
+          full_name?: string
+          id?: string
+          investment_capacity?: string | null
+          message?: string | null
+          phone?: string | null
+          project_id?: string
+          status?: string | null
+          time_horizon?: string | null
+          updated_at?: string
+          user_id?: string | null
+          wants_equity?: boolean | null
         }
         Relationships: []
       }
@@ -766,12 +1065,15 @@ export type Database = {
           admin_notes: string | null
           certification_type: string | null
           certified_at: string | null
+          content_hash: string | null
           created_at: string
           expires_at: string | null
           id: string
           project_id: string
           report_url: string | null
           scoring_id: string | null
+          short_id: string | null
+          signed_payload: Json | null
           status: string | null
           updated_at: string
           user_id: string
@@ -780,12 +1082,15 @@ export type Database = {
           admin_notes?: string | null
           certification_type?: string | null
           certified_at?: string | null
+          content_hash?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
           project_id: string
           report_url?: string | null
           scoring_id?: string | null
+          short_id?: string | null
+          signed_payload?: Json | null
           status?: string | null
           updated_at?: string
           user_id: string
@@ -794,12 +1099,15 @@ export type Database = {
           admin_notes?: string | null
           certification_type?: string | null
           certified_at?: string | null
+          content_hash?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
           project_id?: string
           report_url?: string | null
           scoring_id?: string | null
+          short_id?: string | null
+          signed_payload?: Json | null
           status?: string | null
           updated_at?: string
           user_id?: string
@@ -830,6 +1138,7 @@ export type Database = {
           description: string | null
           id: string
           project_id: string
+          receipt_path: string | null
           record_date: string
           record_type: string
           updated_at: string
@@ -843,6 +1152,7 @@ export type Database = {
           description?: string | null
           id?: string
           project_id: string
+          receipt_path?: string | null
           record_date?: string
           record_type?: string
           updated_at?: string
@@ -856,6 +1166,7 @@ export type Database = {
           description?: string | null
           id?: string
           project_id?: string
+          receipt_path?: string | null
           record_date?: string
           record_type?: string
           updated_at?: string
@@ -924,25 +1235,198 @@ export type Database = {
           },
         ]
       }
+      mp_introductions: {
+        Row: {
+          admin_notes: string | null
+          amount_requested: number | null
+          created_at: string
+          id: string
+          needs: string
+          project_id: string
+          status: string
+          target_name: string | null
+          target_sector: string | null
+          target_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount_requested?: number | null
+          created_at?: string
+          id?: string
+          needs: string
+          project_id: string
+          status?: string
+          target_name?: string | null
+          target_sector?: string | null
+          target_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount_requested?: number | null
+          created_at?: string
+          id?: string
+          needs?: string
+          project_id?: string
+          status?: string
+          target_name?: string | null
+          target_sector?: string | null
+          target_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_introductions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_project_media: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          kind: string
+          project_id: string
+          storage_path: string
+          taken_at: string | null
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          project_id: string
+          storage_path: string
+          taken_at?: string | null
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          project_id?: string
+          storage_path?: string
+          taken_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_project_media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_project_team: {
+        Row: {
+          bio: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          expertise: string | null
+          full_name: string
+          id: string
+          is_external: boolean
+          organization: string | null
+          photo_url: string | null
+          project_id: string
+          role_title: string | null
+          sort_order: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          expertise?: string | null
+          full_name: string
+          id?: string
+          is_external?: boolean
+          organization?: string | null
+          photo_url?: string | null
+          project_id: string
+          role_title?: string | null
+          sort_order?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          expertise?: string | null
+          full_name?: string
+          id?: string
+          is_external?: boolean
+          organization?: string | null
+          photo_url?: string | null
+          project_id?: string
+          role_title?: string | null
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_project_team_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mp_projects: {
         Row: {
           activity_type: string | null
           annual_revenue: number | null
+          budget_initial: number | null
           city: string | null
+          commercialization: string | null
+          complexity_level: string
           country: string | null
+          cover_url: string | null
           created_at: string
           creation_date: string | null
           description: string | null
           display_id: string | null
           employees_count: number | null
+          governance: Json | null
           has_accounting: boolean | null
           has_bank_account: boolean | null
           has_business_plan: boolean | null
           id: string
+          is_public: boolean
+          journey: string
           legal_status: string | null
+          logo_url: string | null
+          maturite: string | null
+          monitoring_evaluation: string | null
           monthly_expenses: number | null
+          objectif: string | null
+          product_description: string | null
+          profile_kind: string
+          project_type: string | null
+          publish_when_eligible: boolean
           sector: string | null
+          short_pitch: string | null
           status: string | null
+          target_customers: string | null
           title: string
           updated_at: string
           user_id: string
@@ -950,21 +1434,38 @@ export type Database = {
         Insert: {
           activity_type?: string | null
           annual_revenue?: number | null
+          budget_initial?: number | null
           city?: string | null
+          commercialization?: string | null
+          complexity_level?: string
           country?: string | null
+          cover_url?: string | null
           created_at?: string
           creation_date?: string | null
           description?: string | null
           display_id?: string | null
           employees_count?: number | null
+          governance?: Json | null
           has_accounting?: boolean | null
           has_bank_account?: boolean | null
           has_business_plan?: boolean | null
           id?: string
+          is_public?: boolean
+          journey?: string
           legal_status?: string | null
+          logo_url?: string | null
+          maturite?: string | null
+          monitoring_evaluation?: string | null
           monthly_expenses?: number | null
+          objectif?: string | null
+          product_description?: string | null
+          profile_kind?: string
+          project_type?: string | null
+          publish_when_eligible?: boolean
           sector?: string | null
+          short_pitch?: string | null
           status?: string | null
+          target_customers?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -972,26 +1473,102 @@ export type Database = {
         Update: {
           activity_type?: string | null
           annual_revenue?: number | null
+          budget_initial?: number | null
           city?: string | null
+          commercialization?: string | null
+          complexity_level?: string
           country?: string | null
+          cover_url?: string | null
           created_at?: string
           creation_date?: string | null
           description?: string | null
           display_id?: string | null
           employees_count?: number | null
+          governance?: Json | null
           has_accounting?: boolean | null
           has_bank_account?: boolean | null
           has_business_plan?: boolean | null
           id?: string
+          is_public?: boolean
+          journey?: string
           legal_status?: string | null
+          logo_url?: string | null
+          maturite?: string | null
+          monitoring_evaluation?: string | null
           monthly_expenses?: number | null
+          objectif?: string | null
+          product_description?: string | null
+          profile_kind?: string
+          project_type?: string | null
+          publish_when_eligible?: boolean
           sector?: string | null
+          short_pitch?: string | null
           status?: string | null
+          target_customers?: string | null
           title?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      mp_recommendations: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          done_at: string | null
+          id: string
+          project_id: string
+          recommended_action: string | null
+          related_service_code: string | null
+          severity: string
+          source: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          done_at?: string | null
+          id?: string
+          project_id: string
+          recommended_action?: string | null
+          related_service_code?: string | null
+          severity?: string
+          source?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          done_at?: string | null
+          id?: string
+          project_id?: string
+          recommended_action?: string | null
+          related_service_code?: string | null
+          severity?: string
+          source?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_recommendations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mp_scoring_results: {
         Row: {
@@ -1060,6 +1637,254 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mp_service_catalog: {
+        Row: {
+          category: string
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          duration: string | null
+          id: string
+          is_active: boolean
+          level_required: string | null
+          price: number
+          short_description: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          is_active?: boolean
+          level_required?: string | null
+          price?: number
+          short_description?: string | null
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          is_active?: boolean
+          level_required?: string | null
+          price?: number
+          short_description?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mp_service_request_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          from_status: string | null
+          id: string
+          note: string | null
+          request_id: string
+          to_status: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          note?: string | null
+          request_id: string
+          to_status: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          note?: string | null
+          request_id?: string
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_service_request_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "mp_user_service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_support_tickets: {
+        Row: {
+          admin_response: string | null
+          attachments: Json
+          category: string
+          created_at: string
+          id: string
+          message: string
+          plan_at_creation: Database["public"]["Enums"]["mp_plan_tier"]
+          priority: string
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          attachments?: Json
+          category?: string
+          created_at?: string
+          id?: string
+          message: string
+          plan_at_creation?: Database["public"]["Enums"]["mp_plan_tier"]
+          priority?: string
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          attachments?: Json
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string
+          plan_at_creation?: Database["public"]["Enums"]["mp_plan_tier"]
+          priority?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mp_user_plans: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          started_at: string
+          tier: Database["public"]["Enums"]["mp_plan_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          started_at?: string
+          tier?: Database["public"]["Enums"]["mp_plan_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          started_at?: string
+          tier?: Database["public"]["Enums"]["mp_plan_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mp_user_service_requests: {
+        Row: {
+          admin_notes: string | null
+          amount_quoted: number | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          message: string | null
+          project_id: string | null
+          scheduled_at: string | null
+          service_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount_quoted?: number | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          project_id?: string | null
+          scheduled_at?: string | null
+          service_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount_quoted?: number | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          project_id?: string | null
+          scheduled_at?: string | null
+          service_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_user_service_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_user_service_requests_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "mp_service_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mp_voice_usage: {
+        Row: {
+          count: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          year_month: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          year_month: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          year_month?: string
+        }
+        Relationships: []
       }
       news: {
         Row: {
@@ -1364,10 +2189,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "payments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "payments_project_id_projects_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_project_id_projects_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
             referencedColumns: ["id"]
           },
           {
@@ -1493,21 +2332,29 @@ export type Database = {
       profiles: {
         Row: {
           account_status: string | null
+          annual_revenue: number | null
           avatar_url: string | null
           bio: string | null
+          business_model: string | null
           city: string | null
           company_name: string | null
           country: string | null
           created_at: string
           email: string | null
+          employees_count: number | null
           first_name: string | null
+          founding_year: number | null
           id: string
           is_verified: boolean | null
           last_name: string | null
+          legal_form: string | null
+          mp_onboarded_at: string | null
           phone: string | null
           referral_code: string | null
           referred_by_code: string | null
           referred_by_user_id: string | null
+          sector: string | null
+          share_capital: number | null
           suspended_at: string | null
           suspended_reason: string | null
           total_commissions: number | null
@@ -1515,25 +2362,34 @@ export type Database = {
           unsubscribe_token: string | null
           updated_at: string
           user_type: string
+          website: string | null
           whatsapp: string | null
         }
         Insert: {
           account_status?: string | null
+          annual_revenue?: number | null
           avatar_url?: string | null
           bio?: string | null
+          business_model?: string | null
           city?: string | null
           company_name?: string | null
           country?: string | null
           created_at?: string
           email?: string | null
+          employees_count?: number | null
           first_name?: string | null
+          founding_year?: number | null
           id: string
           is_verified?: boolean | null
           last_name?: string | null
+          legal_form?: string | null
+          mp_onboarded_at?: string | null
           phone?: string | null
           referral_code?: string | null
           referred_by_code?: string | null
           referred_by_user_id?: string | null
+          sector?: string | null
+          share_capital?: number | null
           suspended_at?: string | null
           suspended_reason?: string | null
           total_commissions?: number | null
@@ -1541,25 +2397,34 @@ export type Database = {
           unsubscribe_token?: string | null
           updated_at?: string
           user_type?: string
+          website?: string | null
           whatsapp?: string | null
         }
         Update: {
           account_status?: string | null
+          annual_revenue?: number | null
           avatar_url?: string | null
           bio?: string | null
+          business_model?: string | null
           city?: string | null
           company_name?: string | null
           country?: string | null
           created_at?: string
           email?: string | null
+          employees_count?: number | null
           first_name?: string | null
+          founding_year?: number | null
           id?: string
           is_verified?: boolean | null
           last_name?: string | null
+          legal_form?: string | null
+          mp_onboarded_at?: string | null
           phone?: string | null
           referral_code?: string | null
           referred_by_code?: string | null
           referred_by_user_id?: string | null
+          sector?: string | null
+          share_capital?: number | null
           suspended_at?: string | null
           suspended_reason?: string | null
           total_commissions?: number | null
@@ -1567,6 +2432,7 @@ export type Database = {
           unsubscribe_token?: string | null
           updated_at?: string
           user_type?: string
+          website?: string | null
           whatsapp?: string | null
         }
         Relationships: []
@@ -1676,6 +2542,61 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "project_evaluations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_team: {
+        Row: {
+          bio: string | null
+          created_at: string
+          display_order: number | null
+          full_name: string
+          id: string
+          photo_url: string | null
+          project_id: string
+          role_title: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number | null
+          full_name: string
+          id?: string
+          photo_url?: string | null
+          project_id: string
+          role_title: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number | null
+          full_name?: string
+          id?: string
+          photo_url?: string | null
+          project_id?: string
+          role_title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_team_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_team_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
+            referencedColumns: ["id"]
+          },
         ]
       }
       project_updates: {
@@ -1711,74 +2632,129 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "project_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "public_projects"
+            referencedColumns: ["id"]
+          },
         ]
       }
       projects: {
         Row: {
+          amount_requested: number | null
           category: string | null
           city: string | null
           country: string | null
+          cover_url: string | null
+          cover_url_mobile: string | null
           created_at: string
+          currency: string | null
           current_funding: number | null
           description: string | null
           display_id: string | null
           documents: Json | null
+          expected_roi: number | null
           fonds_disponibles: string | null
           funding_goal: number | null
+          funding_types: string[] | null
           funds_raised: number | null
+          gallery_urls: string[] | null
           id: string
           image_url: string | null
+          is_public: boolean | null
+          logo_url: string | null
+          mp_score: number | null
           owner_id: string
+          public_summary: string | null
+          recommendation_level: string | null
+          repayment_capacity: string | null
           risk_score: string | null
           sector: string | null
           short_slug: string | null
+          slug: string | null
           status: string | null
+          tagline: string | null
           title: string
           updated_at: string
+          website_url: string | null
         }
         Insert: {
+          amount_requested?: number | null
           category?: string | null
           city?: string | null
           country?: string | null
+          cover_url?: string | null
+          cover_url_mobile?: string | null
           created_at?: string
+          currency?: string | null
           current_funding?: number | null
           description?: string | null
           display_id?: string | null
           documents?: Json | null
+          expected_roi?: number | null
           fonds_disponibles?: string | null
           funding_goal?: number | null
+          funding_types?: string[] | null
           funds_raised?: number | null
+          gallery_urls?: string[] | null
           id?: string
           image_url?: string | null
+          is_public?: boolean | null
+          logo_url?: string | null
+          mp_score?: number | null
           owner_id: string
+          public_summary?: string | null
+          recommendation_level?: string | null
+          repayment_capacity?: string | null
           risk_score?: string | null
           sector?: string | null
           short_slug?: string | null
+          slug?: string | null
           status?: string | null
+          tagline?: string | null
           title: string
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
+          amount_requested?: number | null
           category?: string | null
           city?: string | null
           country?: string | null
+          cover_url?: string | null
+          cover_url_mobile?: string | null
           created_at?: string
+          currency?: string | null
           current_funding?: number | null
           description?: string | null
           display_id?: string | null
           documents?: Json | null
+          expected_roi?: number | null
           fonds_disponibles?: string | null
           funding_goal?: number | null
+          funding_types?: string[] | null
           funds_raised?: number | null
+          gallery_urls?: string[] | null
           id?: string
           image_url?: string | null
+          is_public?: boolean | null
+          logo_url?: string | null
+          mp_score?: number | null
           owner_id?: string
+          public_summary?: string | null
+          recommendation_level?: string | null
+          repayment_capacity?: string | null
           risk_score?: string | null
           sector?: string | null
           short_slug?: string | null
+          slug?: string | null
           status?: string | null
+          tagline?: string | null
           title?: string
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: [
           {
@@ -2096,6 +3072,48 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          content: string
+          country: string | null
+          created_at: string
+          id: string
+          name: string
+          published: boolean
+          rating: number | null
+          role: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          content: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          published?: boolean
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          content?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          published?: boolean
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_journeys: {
         Row: {
           created_at: string
@@ -2233,6 +3251,72 @@ export type Database = {
       }
     }
     Views: {
+      public_projects: {
+        Row: {
+          amount_requested: number | null
+          city: string | null
+          country: string | null
+          cover_url: string | null
+          created_at: string | null
+          currency: string | null
+          display_id: string | null
+          expected_roi: number | null
+          funding_types: string[] | null
+          id: string | null
+          logo_url: string | null
+          mp_score: number | null
+          public_summary: string | null
+          recommendation_level: string | null
+          repayment_capacity: string | null
+          sector: string | null
+          short_slug: string | null
+          status: string | null
+          title: string | null
+        }
+        Insert: {
+          amount_requested?: number | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          currency?: string | null
+          display_id?: string | null
+          expected_roi?: number | null
+          funding_types?: string[] | null
+          id?: string | null
+          logo_url?: string | null
+          mp_score?: number | null
+          public_summary?: string | null
+          recommendation_level?: string | null
+          repayment_capacity?: string | null
+          sector?: string | null
+          short_slug?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Update: {
+          amount_requested?: number | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          currency?: string | null
+          display_id?: string | null
+          expected_roi?: number | null
+          funding_types?: string[] | null
+          id?: string | null
+          logo_url?: string | null
+          mp_score?: number | null
+          public_summary?: string | null
+          recommendation_level?: string | null
+          repayment_capacity?: string | null
+          sector?: string | null
+          short_slug?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
       tenders_public: {
         Row: {
           country: string | null
@@ -2329,6 +3413,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_agricapital_partition: { Args: never; Returns: Json }
       get_opportunity_contacts: {
         Args: { p_id: string }
         Returns: {
@@ -2347,10 +3432,11 @@ export type Database = {
       is_any_admin: { Args: { _user_id: string }; Returns: boolean }
       is_email_unsubscribed: { Args: { _email: string }; Returns: boolean }
       pick_email_provider: { Args: never; Returns: string }
+      unaccent: { Args: { "": string }; Returns: string }
       user_profile_type: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      mp_plan_tier: "free" | "growth" | "partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2477,6 +3563,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      mp_plan_tier: ["free", "growth", "partner"],
+    },
   },
 } as const

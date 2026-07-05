@@ -157,24 +157,20 @@ export const Hero = () => {
               professionnels — structuration, financement et incubation.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-1">
-              <Link to="/submit-project" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  className="w-full font-semibold text-white shadow-luxe hover:shadow-glow hover:scale-[1.02] transition-all"
-                  style={{ background: "var(--gradient-brand)" }}
-                >
-                  Soumettre un projet
-                  <ArrowRight className="ml-2 h-5 w-5" />
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
+              <Link to="/solutions/miprojet-go" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full font-bold text-white shadow-luxe hover:scale-[1.02] transition-all" style={{ background: "#1B6FB5" }}>
+                  Découvrir MiPROJET Go <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link to="/projects" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full bg-white/5 border-white/30 text-white hover:bg-white/15 hover:border-white/50 backdrop-blur-md"
-                >
-                  Découvrir les projets
+              <Link to="/solutions/miprojet-plus" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full font-bold text-white shadow-luxe hover:scale-[1.02] transition-all" style={{ background: "#F97316" }}>
+                  Découvrir MiPROJET+ <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/solutions/miprojet-invest" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full font-bold text-white shadow-luxe hover:scale-[1.02] transition-all" style={{ background: "#C9A84C" }}>
+                  Découvrir MiPROJET Invest <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>

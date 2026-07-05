@@ -53,44 +53,48 @@ export const Navigation = () => {
 
   const groups: MenuGroup[] = [
     {
-      key: "about",
-      label: "À propos",
+      key: "ecosystem",
+      label: "Écosystème",
       items: [
-        { to: "/about", label: "Qui sommes-nous", emoji: "🏛️" },
-        { to: "/how-it-works", label: "Comment ça marche", emoji: "⚙️" },
-        { to: "/success-stories", label: "Témoignages", emoji: "🏆" },
+        { to: "/about", label: "Notre vision", emoji: "🌍" },
+        { to: "/how-it-works", label: "Notre mission", emoji: "🎯" },
+        { to: "/success-stories", label: "Notre impact", emoji: "🏆" },
         { to: "/journey", label: "Notre parcours", emoji: "🛤️" },
       ],
     },
     {
-      key: "offers",
-      label: "Nos offres",
+      key: "solutions",
+      label: "Solutions",
       items: [
-        { to: "/services", label: "Tous les services", emoji: "🧭" },
-        { to: "/services/structuration", label: "Structuration de projet", emoji: "📋" },
-        { to: "/services/accompagnement", label: "Accompagnement entreprise", emoji: "🤝" },
-        { to: "/incubation", label: "Programme d'incubation", emoji: "🚀" },
-        { to: "/subscription", label: "Abonnements Premium", emoji: "👑" },
+        { to: "/solutions/miprojet-go", label: "MiPROJET Go", emoji: "📱", desc: "Tracez. Gérez. Grandissez." },
+        { to: "/solutions/miprojet-plus", label: "MiPROJET+", emoji: "📈", desc: "Structurez. Certifiez. Financez." },
+        { to: "/solutions/miprojet-invest", label: "MiPROJET Invest", emoji: "💎", desc: "Investir dans l'Afrique productive." },
       ],
     },
     {
       key: "opportunities",
       label: "Opportunités",
       items: [
-        { to: "/opportunities", label: "Appels & financements", emoji: "🎯" },
+        { to: "/appels-doffres", label: "Appels d'offres", emoji: "📋" },
+        { to: "/opportunities", label: "Opportunités & financements", emoji: "🎯" },
         { to: "/projects", label: "Projets à financer", emoji: "💼" },
+      ],
+    },
+    {
+      key: "partners",
+      label: "Investisseurs & Partenaires",
+      items: [
         { to: "/investors", label: "Espace investisseurs", emoji: "💰" },
-        { to: "/submit-project", label: "Soumettre un projet", emoji: "📤" },
+        { to: "/solutions/miprojet-invest", label: "Devenir partenaire", emoji: "🤝" },
+        { to: "/investors", label: "Institutions financières", emoji: "🏦" },
       ],
     },
     {
       key: "resources",
-      label: "Actualités & Ressources",
+      label: "Actualités",
       items: [
         { to: "/news", label: "Actualités", emoji: "📰" },
-        { to: "/documents", label: "Documents", emoji: "📚" },
-        { to: "/ebook", label: "Guide 50 financements", emoji: "📕" },
-        { to: "/forum", label: "Forum communauté", emoji: "💬" },
+        { to: "/documents", label: "Ressources", emoji: "📚" },
         { to: "/faq", label: "FAQ", emoji: "❓" },
       ],
     },

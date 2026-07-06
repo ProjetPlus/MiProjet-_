@@ -74,6 +74,13 @@ ${(payload as any).ogImage ? `<div class="card"><div class="k">Aperçu image</di
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Admin-only: this debug endpoint performs server-side fetches and exposes
+  // parsed metadata. Restricting it prevents unauthenticated probing/abuse.
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
+
+
+
   try {
     const url = new URL(req.url);
     const prefix = (url.searchParams.get("prefix") || "").toLowerCase();

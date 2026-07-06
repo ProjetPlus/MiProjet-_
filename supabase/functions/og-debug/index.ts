@@ -1,3 +1,5 @@
+import { requireAdmin } from "../_shared/requireAdmin.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":

@@ -1,14 +1,27 @@
 import { sendMail, brandedEmailShell, corsHeaders } from "../_shared/mailer.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireAdmin } from "../_shared/requireAdmin.ts";
 
 /**
  * Triggered automatically (via DB trigger or admin button) when an opportunity
  * is published. Sends a notification email to all active Premium and Elite
  * subscribers. Body: { opportunityId: string }
+ *
+ * Auth: either an admin JWT (Authorization header) OR an internal secret
+ * header (x-internal-secret == SUPABASE_SERVICE_ROLE_KEY) is required, to
+ * prevent anonymous mass-email abuse.
  */
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+
+  const internalSecret = req.headers.get("x-internal-secret") ?? "";
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  const isInternalCall = internalSecret.length > 0 && internalSecret === serviceRoleKey;
+  if (!isInternalCall) {
+    const auth = await requireAdmin(req);
+    if (!auth.ok) return auth.response;
+  }
 
   try {
     const { opportunityId } = await req.json();
@@ -19,10 +32,11 @@ Deno.serve(async (req) => {
     }
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
+    // Only notify for published opportunities (prevents leaking drafts).
     const { data: opp, error: oppErr } = await supabase
-      .from("opportunities").select("*").eq("id", opportunityId).single();
+      .from("opportunities").select("*").eq("id", opportunityId).eq("status", "published").single();
     if (oppErr || !opp) {
-      return new Response(JSON.stringify({ ok: false, error: "Opportunity not found" }), {
+      return new Response(JSON.stringify({ ok: false, error: "Published opportunity not found" }), {
         status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

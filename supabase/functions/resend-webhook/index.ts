@@ -22,20 +22,22 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 
   const secret = Deno.env.get("RESEND_WEBHOOK_SECRET");
+  if (!secret) {
+    console.error("[resend-webhook] RESEND_WEBHOOK_SECRET is not configured");
+    return new Response(JSON.stringify({ ok: false, error: "Webhook secret not configured" }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
   const body = await req.text();
 
   let event: any;
   try {
-    if (secret) {
-      const wh = new Webhook(secret);
-      event = wh.verify(body, {
-        "svix-id": req.headers.get("svix-id") ?? "",
-        "svix-timestamp": req.headers.get("svix-timestamp") ?? "",
-        "svix-signature": req.headers.get("svix-signature") ?? "",
-      });
-    } else {
-      event = JSON.parse(body);
-    }
+    const wh = new Webhook(secret);
+    event = wh.verify(body, {
+      "svix-id": req.headers.get("svix-id") ?? "",
+      "svix-timestamp": req.headers.get("svix-timestamp") ?? "",
+      "svix-signature": req.headers.get("svix-signature") ?? "",
+    });
   } catch (e) {
     console.error("[resend-webhook] signature verification failed:", (e as Error).message);
     return new Response(JSON.stringify({ ok: false, error: "Invalid signature" }), {
